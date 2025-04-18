@@ -1,0 +1,371 @@
+﻿@model MasterPiece.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "تأكيد الطلب";
+}
+
+<!-- يجب إضافة هذه الأسطر في ملف _Layout.cshtml في قسم head -->
+<!--
+<link rel="stylesheet" href="~/css/checkout.css">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+-->
+<!-- Loading Overlay -->
+<div class="page-loader">
+    <div class="loader"></div>
+</div>
+
+<!-- Header section with breadcrumbs -->
+<div class="heading">
+    <div class="heading-home">
+        <i class='bx bx-home'></i>
+        <a href="/">الرئيسية</a>
+        <i class='bx bx-chevron-left'></i>
+        <a href="/Checkout/Cart">سلة المشتريات</a>
+        <i class='bx bx-chevron-left'></i>
+        <a href="/Checkout/Checkout">الدفع</a>
+        <i class='bx bx-chevron-left'></i>
+        <span>تأكيد الطلب</span>
+    </div>
+    <div class="heading-home">
+        <div class="checkout-steps">
+            <div class="step completed">
+                <span class="step-number"><i class='bx bx-check'></i></span>
+                <span class="step-text">معلومات الشحن</span>
+            </div>
+            <div class="step-connector completed"></div>
+            <div class="step active">
+                <span class="step-number">2</span>
+                <span class="step-text">تأكيد الطلب</span>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step">
+                <span class="step-number">3</span>
+                <span class="step-text">اكتمال الطلب</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-center">
+    <!-- القسم الجانبي لعرض المنتجات -->
+    <aside class="checkout-aside">
+        <div class="aside-header">
+            <a href="#" class="products-link">
+                <i class='bx bx-package'></i>
+                <span>المنتجات</span>
+            </a>
+            <span class="items-count">(@Model.CartItems.Count)</span>
+        </div>
+
+        <div class="checkout-products">
+            @if (Model.CartItems != null && Model.CartItems.Any())
+            {
+                foreach (var item in Model.CartItems)
+                {
+                    if (item != null && item.Product != null)
+                    {
+                        <div class="checkout-box">
+                            <div class="product-image">
+                                <img src="~/img/@item.Product.Image" alt="@item.Product.Description">
+                                <span class="product-quantity">@item.Quantity</span>
+                            </div>
+                            <div class="product-details">
+                                <h4><a href="/Product/Details/@item.ProductId">@item.Product.Description</a></h4>
+                                <div class="product-price">
+                                    <span class="price">$@item.Product.Price</span>
+                                    <span class="total">$@((item.Product.Price * item.Quantity))</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divider"><hr></div>
+                    }
+                }
+            }
+            else
+            {
+                <div class="empty-cart-message">
+                    <i class='bx bx-cart'></i>
+                    <p>لا توجد منتجات في سلة التسوق</p>
+                    <a href="/Product/Index" class="continue-shopping">تصفح المنتجات</a>
+                </div>
+            }
+        </div>
+
+        <div class="discount-input-container">
+            <input type="text" class="discount-input" placeholder="كود الخصم" id="discount-code">
+            <a href="#" class="apply-discount">تطبيق</a>
+        </div>
+
+        <div class="divider1"><hr></div>
+
+        <div class="totals">
+            <div class="total-row">
+                <span>مجموع المنتجات</span>
+                <span>$@Model.Subtotal.ToString("0.00")</span>
+            </div>
+            <div class="total-row">
+                <span>خصم</span>
+                <span>$@Model.Discount.ToString("0.00")</span>
+            </div>
+            <div class="total-row">
+                <span>توصيل</span>
+                <span class="free-shipping">مجاني <i class='bx bx-check'></i></span>
+            </div>
+            <div class="total-row1">
+                <span>الاجمالى</span>
+                <span>$@Model.Total.ToString("0.00")</span>
+            </div>
+        </div>
+
+        <div class="secure-checkout">
+            <div class="secure-icon">
+                <i class='bx bx-lock-alt'></i>
+            </div>
+            <p>جميع المعاملات آمنة ومشفرة</p>
+        </div>
+
+        <div class="delivery-estimate">
+            <div class="delivery-icon">
+                <i class='bx bx-time'></i>
+            </div>
+            <div class="delivery-info">
+                <span class="delivery-title">الوقت المتوقع للتوصيل</span>
+                <span class="delivery-date">@Model.DeliveryDate.ToString("dddd, dd MMMM yyyy")</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- قسم تأكيد الطلب واختيار طريقة الدفع -->
+    <div class="checkout-home">
+        <div class="container-checkout">
+            <div class="payment-logo">
+                <img src="~/img/paymat.png" alt="Payment Logo">
+            </div>
+
+            <div class="checkout-title">
+                <h2>تأكيد الطلب</h2>
+                <p>يرجى مراجعة تفاصيل طلبك واختيار طريقة الدفع</p>
+            </div>
+
+            <div class="address-section">
+                <div class="address-header">
+                    <div class="address-icon">
+                        <i class='bx bxs-location-plus'></i>
+                        <span>عنوان التوصيل</span>
+                    </div>
+                    <div class="change-address">
+                        <a asp-controller="Checkout" asp-action="Checkout">
+                            <i class='bx bx-edit'></i>
+                            <span>تعديل</span>
+                        </a>
+                    </div>
+                </div>
+                <hr>
+                <div class="address-details">
+                    <div class="address-row">
+                        <span class="address-label">الاسم:</span>
+                        <span class="address-value">@Model.CustomerName</span>
+                    </div>
+                    <div class="address-row">
+                        <span class="address-label">العنوان:</span>
+                        <span class="address-value">@Model.Address، @Model.City، @Model.Country</span>
+                    </div>
+                    <div class="address-row">
+                        <span class="address-label">الرمز البريدي:</span>
+                        <span class="address-value">@Model.PostalCode</span>
+                    </div>
+                    <div class="address-row">
+                        <span class="address-label">الهاتف:</span>
+                        <span class="address-value">@Model.PhoneNumber</span>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-controller="Checkout" asp-action="ConfirmOrder" method="post" class="payment-form">
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class='bx bx-credit-card'></i>
+                        <span>اختر طريقة الدفع</span>
+                    </h3>
+
+                    <div class="payment-options">
+                        <div class="payment-option selected">
+                            <input type="radio" name="paymentMethod" id="payment-cod" value="COD" checked>
+                            <label for="payment-cod">
+                                <div class="option-icon">
+                                    <i class='bx bx-money'></i>
+                                </div>
+                                <div class="option-details">
+                                    <span class="option-title">الدفع عند الاستلام</span>
+                                    <span class="option-desc">ادفع نقداً عند استلام الطلب</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="payment-option">
+                            <input type="radio" name="paymentMethod" id="payment-card" value="Card">
+                            <label for="payment-card">
+                                <div class="option-icon">
+                                    <i class='bx bx-credit-card-front'></i>
+                                </div>
+                                <div class="option-details">
+                                    <span class="option-title">الدفع بالبطاقة</span>
+                                    <span class="option-desc">ادفع الآن باستخدام بطاقة الائتمان/الخصم</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="payment-option">
+                            <input type="radio" name="paymentMethod" id="payment-wallet" value="Wallet">
+                            <label for="payment-wallet">
+                                <div class="option-icon">
+                                    <i class='bx bx-wallet'></i>
+                                </div>
+                                <div class="option-details">
+                                    <span class="option-title">المحفظة الإلكترونية</span>
+                                    <span class="option-desc">ادفع باستخدام محفظتك الإلكترونية</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- قسم معلومات البطاقة (مخفي افتراضياً) -->
+                    <div class="card-details" style="display: none;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cardNumber">رقم البطاقة <span class="required">*</span></label>
+                                <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" class="card-number-input">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cardName">الاسم على البطاقة <span class="required">*</span></label>
+                                <input type="text" id="cardName" placeholder="الاسم كما يظهر على البطاقة">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiryDate">تاريخ الانتهاء <span class="required">*</span></label>
+                                <input type="text" id="expiryDate" placeholder="MM / YY">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cvv">رمز الأمان <span class="required">*</span></label>
+                                <input type="text" id="cvv" placeholder="CVV">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/Checkout/Checkout" class="back-button">
+                        <i class='bx bx-arrow-back'></i>
+                        <span>الرجوع للتعديل</span>
+                    </a>
+                    <button type="submit" class="continue-button">
+                        <span>تأكيد الطلب</span>
+                        <i class='bx bx-check-circle'></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/checkout.js"></script>
+    <script>
+        // إضافة فئة التحميل عند بدء الصفحة
+        document.body.classList.add('loading');
+
+        // إزالة فئة التحميل بعد تحميل الصفحة
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.body.classList.remove('loading');
+                document.querySelector('.page-loader').style.display = 'none';
+            }, 500);
+        });
+
+        // تفعيل خيارات الدفع
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        const cardDetails = document.querySelector('.card-details');
+
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // إزالة الفئة المختارة من جميع الخيارات
+                paymentOptions.forEach(opt => opt.classList.remove('selected'));
+
+                // إضافة الفئة المختارة للخيار الحالي
+                this.classList.add('selected');
+
+                // تحديد زر الراديو
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+
+                // عرض/إخفاء تفاصيل البطاقة
+                if (radio.value === 'Card') {
+                    cardDetails.style.display = 'block';
+                } else {
+                    cardDetails.style.display = 'none';
+                }
+            });
+        });
+
+        // تنسيق إدخال رقم البطاقة
+        const cardNumberInput = document.querySelector('.card-number-input');
+        if (cardNumberInput) {
+            cardNumberInput.addEventListener('input', function(e) {
+                // إزالة المسافات والحروف
+                let value = this.value.replace(/\D/g, '');
+
+                // إضافة مسافة بعد كل 4 أرقام
+                if (value.length > 0) {
+                    value = value.match(/.{1,4}/g).join(' ');
+                }
+
+                // تحديث القيمة
+                this.value = value;
+            });
+        }
+
+        // دالة إظهار الإشعارات
+        function showNotification(message, type) {
+            // إنشاء عنصر الإشعار
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-x-circle'}'></i>
+                    <span>${message}</span>
+                </div>
+                <button class="notification-close"><i class='bx bx-x'></i></button>
+            `;
+
+            // إضافة الإشعار للصفحة
+            document.body.appendChild(notification);
+
+            // إظهار الإشعار
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+
+            // إغلاق الإشعار تلقائيًا بعد 3 ثوانٍ
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+
+            // زر إغلاق الإشعار
+            notification.querySelector('.notification-close').addEventListener('click', () => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            });
+        }
+    </script>
+}

@@ -1,0 +1,219 @@
+﻿@model List<Order>
+@using Microsoft.EntityFrameworkCore
+
+@{
+    ViewData["Title"] = "طلباتي";
+    var db = ViewBag.DbContext as MasterpieceContext;
+}
+
+<link rel="stylesheet" href="~/css/profile-shared.css" />
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+<main>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar-profile">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">حسابي</h2>
+            </div>
+            <div class="sidebar-links">
+                <div class="sidebar-link">
+                    <i class='bx bx-user'></i>
+                    <a asp-action="profile">لوحة التحكم</a>
+                </div>
+                <div class="sidebar-link active">
+                    <i class='bx bxs-truck'></i>
+                    <a asp-action="Orders">طلباتي</a>
+                </div>
+                <div class="sidebar-link">
+                    <i class='bx bxs-lock-alt'></i>
+                    <a asp-action="ChangePassword">تغيير كلمة المرور</a>
+                </div>
+                <div class="sidebar-link">
+                    <i class='bx bx-log-out'></i>
+                    <a asp-controller="profile" asp-action="logout">خروج</a>
+                </div>
+            </div>
+        </aside>
+
+        <div class="profile-content">
+            <h3 class="profile-title">طلباتي</h3>
+
+            <div class="orders-box">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="orders-header">
+                        <div class="order-cell">#</div>
+                        <div class="order-cell">رقم الطلب</div>
+                        <div class="order-cell">الطلب</div>
+                        <div class="order-cell">السعر</div>
+                        <div class="order-cell">الحالة</div>
+                        <div class="order-cell">التاريخ</div>
+                        <div class="order-cell">طريقة الدفع</div>
+                    </div>
+
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        var order = Model[i];
+                        var totalAmount = 0;
+                        var orderName = "طلب عادي";
+                        var paymentMethod = "غير محدد";
+
+                        if (order.OrderDetails != null && order.OrderDetails.Any())
+                        {
+                            totalAmount = order.OrderDetails.Sum(d => (d.Price ?? 0) * (d.Quantity ?? 0));
+                            var firstItem = order.OrderDetails.FirstOrDefault();
+                            if (firstItem?.Product != null)
+                            {
+                                orderName = firstItem.Product.Name ?? "";
+
+                                // إذا كان هناك أكثر من منتج، أضف "و أكثر"
+                                if (order.OrderDetails.Count > 1)
+                                {
+                                    orderName = orderName;
+                                }
+                            }
+                        }
+
+                        // الحصول على طريقة الدفع
+                        if (order.Payments != null && order.Payments.Any())
+                        {
+                            var payment = order.Payments.FirstOrDefault();
+                            paymentMethod = payment?.PaymentMethod ?? "غير محدد";
+                        }
+
+                        <div class="order-row">
+                            <div class="order-cell">@(i + 1)</div>
+                            <div class="order-cell order-id">#@order.Id</div>
+                            <div class="order-cell">@orderName</div>
+                            <div class="order-cell">@totalAmount د.أ</div>
+                            <div class="order-cell status-cell">
+                                <span class="status-badge @GetStatusClass(order.Status)">
+                                    @order.Status
+                                </span>
+                            </div>
+                            <div class="order-cell">
+                                @(order.OrderDate?.ToString("dd MMM yyyy") ?? "بدون تاريخ")
+                            </div>
+                            <div class="order-cell">@paymentMethod</div>
+                        </div>
+
+                        @if (order.Status?.ToLower() == "pending" || order.Status == "قيد الانتظار")
+                        {
+                            <form asp-action="CancelOrder" method="post" class="cancel-form" id="cancelForm-@order.Id">
+                                <input type="hidden" name="id" value="@order.Id" />
+                            </form>
+                        }
+
+                        <div class="order-details-row">
+                            <div class="order-details-header">
+                                <div style="flex: 3">المنتج</div>
+                                <div style="flex: 1">السعر</div>
+                                <div style="flex: 1">الكمية</div>
+                                <div style="flex: 1">المجموع</div>
+                            </div>
+
+                            @if (order.OrderDetails != null && order.OrderDetails.Any())
+                            {
+                                foreach (var detail in order.OrderDetails)
+                                {
+                                    var product = detail.Product;
+                                    var itemTotal = (detail.Price ?? 0) * (detail.Quantity ?? 0);
+
+                                    <div class="order-product">
+                                        <div class="product-img">
+                                            <img src="~/img/@(product?.Image ?? "default.jpg")" alt="@product?.Name" />
+                                        </div>
+                                        <div class="product-info" style="flex: 3">
+                                            <div class="product-name">@(product?.Name ?? "منتج غير معروف")</div>
+                                            <div class="product-description">
+                                                @if (product?.Description?.Length > 100)
+                                                {
+                                                    @(product.Description.Substring(0, 100) + "...")
+                                                }
+                                                else
+                                                {
+                                                    @(product?.Description ?? "")
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="product-price" style="flex: 1">@(detail.Price ?? 0) د.أ</div>
+                                        <div class="product-quantity" style="flex: 1">@(detail.Quantity ?? 0)</div>
+                                        <div class="product-subtotal" style="flex: 1">@itemTotal د.أ</div>
+                                    </div>
+                                }
+
+                                <div class="order-summary">
+                                    <div style="margin-left: 1rem;">المجموع الكلي:</div>
+                                    <div>@totalAmount د.أ</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="text-align: center; padding: 1rem;">
+                                    لا توجد تفاصيل متاحة لهذا الطلب
+                                </div>
+                            }
+
+                            @if (order.Payments != null && order.Payments.Any())
+                            {
+                                var payment = order.Payments.FirstOrDefault();
+                                <div style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                                    <strong>طريقة الدفع:</strong> @payment?.PaymentMethod
+                                    <strong style="margin-right: 2rem;">المبلغ:</strong> @payment?.Amount د.أ
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div style="text-align: center; padding: 3rem 1rem;">
+                        <i class='bx bx-package' style="font-size: 3rem; color: var(--secondary-color);"></i>
+                        <p style="margin-top: 1rem; font-size: 1.2rem;">لا توجد طلبات سابقة</p>
+                        <p style="color: var(--secondary-color); margin-top: 0.5rem;">عندما تقوم بإنشاء طلبات، ستظهر هنا</p>
+                        <a href="/products" class="btn-edit-profile" style="margin-top: 1.5rem; display: inline-block;">
+                            <i class='bx bx-shopping-bag'></i> تسوق الآن
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+</main>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        <i class='bx bx-check-circle'></i> @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        <i class='bx bx-error-circle'></i> @TempData["Error"]
+    </div>
+}
+
+<!-- تضمين CSRF token للنماذج المعروضة بواسطة JavaScript -->
+@Html.AntiForgeryToken()
+
+<script src="~/js/profile-shared.js"></script>
+
+@functions {
+    public string GetStatusClass(string status)
+    {
+        if (status == null) return "";
+
+        return status.ToLower() switch
+        {
+            "pending" or "قيد الانتظار" => "status-pending",
+            "completed" or "مكتمل" => "status-completed",
+            "shipped" or "تم الشحن" => "status-shipped",
+            "cancelled" or "ملغي" => "status-cancelled",
+            _ => ""
+        };
+    }
+}

@@ -1,0 +1,676 @@
+﻿
+/* ===== التنسيقات العامة ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Cairo', sans-serif;
+    direction: rtl;
+}
+
+/* ===== الرأس (Heading) ===== */
+.heading {
+    padding: 20px 0;
+    background-color: #f6f7f8;
+    text-align: center;
+}
+
+.heading-home {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+    .heading-home i {
+        color: #f87660;
+        font-size: 20px;
+    }
+
+    .heading-home span {
+        color: #333;
+        font-size: 16px;
+    }
+
+/* ===== سلة التسوق (Cart) ===== */
+.container-left {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 20px auto;
+    gap: 20px;
+}
+
+.dashboard {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    flex: 2;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.dashboard-title {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: right;
+    font-size: 24px;
+}
+
+.orders-table {
+    width: 100%;
+}
+
+.table-header {
+    display: flex;
+    background-color: #f6f7f8;
+    padding: 15px 0;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.table-row {
+    display: flex;
+    padding: 15px 0;
+    align-items: center;
+}
+
+.cell {
+    flex: 1;
+    text-align: center;
+}
+
+.cart-cell.cart-image {
+    flex: 1;
+}
+
+.cart-cell.cart-product-name {
+    flex: 2;
+    text-align: right;
+}
+
+    .cart-cell.cart-product-name a {
+        color: #333;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+        .cart-cell.cart-product-name a:hover {
+            color: #f87660;
+        }
+
+.cart-image img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.cart-quantity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity-button {
+    background-color: #f87660;
+    color: white;
+    border: none;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 16px;
+}
+
+.quantity-input {
+    width: 50px;
+    text-align: center;
+    margin: 0 5px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.cart-x i {
+    color: #f87660;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.update-btn {
+    background-color: #f87660;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 30px 0;
+}
+
+.continue-shopping {
+    display: inline-block;
+    background-color: #f87660;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+
+/* ===== الجانب (Aside) لملخص الطلبية ===== */
+.aside-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    flex: 1;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-height: 350px;
+}
+
+.order-summary h3 {
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.order-subtotal, .order-total {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+}
+
+.order-total {
+    font-weight: bold;
+}
+
+.discount-input-container {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.discount-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.apply-discount {
+    background-color: #f87660;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.checkout-button {
+    margin-top: 20px;
+}
+
+    .checkout-button a {
+        display: block;
+        background-color: #f87660;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        padding: 12px 0;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+
+        .checkout-button a:hover {
+            background-color: #e56653;
+        }
+
+/* ===== صفحة الدفع (Checkout) ===== */
+.container-center {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto;
+    gap: 20px;
+}
+
+.checkout-aside {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    flex: 1;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.aside-header {
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+
+.products-link {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.checkout-products {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.checkout-box {
+    display: flex;
+    padding: 15px 0;
+}
+
+.product-image {
+    width: 80px;
+    height: 80px;
+    margin-left: 15px;
+}
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+.product-details {
+    flex: 1;
+}
+
+    .product-details h4 {
+        margin-bottom: 5px;
+    }
+
+        .product-details h4 a {
+            color: #333;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+            .product-details h4 a:hover {
+                color: #f87660;
+            }
+
+    .product-details p {
+        color: #666;
+        margin-bottom: 5px;
+    }
+
+    .product-details span a {
+        color: #f87660;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+.divider {
+    margin: 5px 0;
+}
+
+.divider1 {
+    margin: 15px 0;
+}
+
+.totals {
+    margin-top: 20px;
+}
+
+.total-row, .total-row1 {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.total-row1 {
+    background-color: #f87660;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* ===== نموذج الشحن ===== */
+.checkout-home {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    flex: 2;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.container-checkout {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.payment-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+    .payment-logo img {
+        height: 30px;
+    }
+
+.checkout-form {
+    display: flex;
+    flex-direction: column;
+}
+
+    .checkout-form input,
+    .checkout-form textarea,
+    .checkout-form select {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .checkout-form textarea {
+        resize: none;
+        height: 100px;
+    }
+
+.text-danger {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.city-select {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+    .city-select select {
+        flex: 1;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+.continue-button, .continue-button1 {
+    margin-top: 20px;
+    text-align: center;
+}
+
+    .continue-button button,
+    .continue-button a,
+    .continue-button1 a {
+        background-color: #f87660;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 5px;
+        font-size: 18px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+/* ===== تفاصيل العنوان والدفع ===== */
+.address-section {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.address-icon {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .address-icon i {
+        color: #f87660;
+        font-size: 24px;
+    }
+
+.change-address a {
+    color: #f87660;
+    text-decoration: none;
+}
+
+.address-details {
+    margin-top: 15px;
+}
+
+    .address-details span {
+        display: block;
+        margin-bottom: 10px;
+        color: #666;
+    }
+
+.payment-options {
+    margin: 30px 0;
+}
+
+.payment-option {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+}
+
+    .payment-option input {
+        margin-left: 15px;
+    }
+
+/* ===== صفحة نجاح الطلب ===== */
+.success {
+    max-width: 600px;
+    margin: 50px auto;
+    text-align: center;
+    background-color: white;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.success-img {
+    width: 200px;
+    margin: 0 auto 30px;
+}
+
+    .success-img img {
+        width: 100%;
+    }
+
+.success h1 {
+    color: #f87660;
+    margin-bottom: 15px;
+}
+
+.success h4 {
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.success p {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+    .success p span {
+        color: #f87660;
+        font-weight: bold;
+    }
+
+/* ===== التوافقية مع الشاشات الصغيرة ===== */
+@media (max-width: 992px) {
+    .container-left, .container-center {
+        flex-direction: column;
+    }
+
+    .aside-card {
+        max-height: none;
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-header, .table-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .cell {
+        text-align: right;
+    }
+
+    .city-select {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 576px) {
+    .checkout-form input,
+    .checkout-form textarea,
+    .checkout-form select {
+        padding: 10px;
+    }
+
+    .success {
+        padding: 20px;
+    }
+}
+
+/* ===== عناصر إضافية ===== */
+.ar_main_container {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 20px auto;
+    gap: 20px;
+}
+
+.ar_checkout_panel {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    flex: 1;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.ar_cart_overview {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    flex: 1;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.ar_input_wrapper {
+    margin-bottom: 15px;
+}
+
+.ar_payment_options {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+    .ar_payment_options img {
+        height: 30px;
+        object-fit: contain;
+    }
+
+.ar_product_card {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+    align-items: center;
+}
+
+.ar_product_details {
+    flex: 1;
+}
+
+.ar_product_thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-left: 15px;
+}
+
+.ar_checkout_btn {
+    background-color: #f87660;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.ar_section_header {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.ar_price_details {
+    margin-top: 30px;
+}
+
+.ar_price_line {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.ar_final_amount {
+    background-color: #f87660;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.ar_coupon_container {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.ar_coupon_btn {
+    background-color: #f87660;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}

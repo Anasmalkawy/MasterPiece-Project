@@ -1,0 +1,278 @@
+﻿@{
+    ViewData["Title"] = "تقرير المبيعات";
+    Layout = "_AdminLayout";
+}
+
+<div class="admin-sales-report">
+    <div class="page-header">
+        <h1>تقرير المبيعات</h1>
+        <div class="report-actions">
+            <button class="btn btn-primary" onclick="window.print()">
+                <i class="fas fa-print"></i> طباعة التقرير
+            </button>
+            <button class="btn btn-success" id="exportExcel">
+                <i class="fas fa-file-excel"></i> تصدير إلى Excel
+            </button>
+        </div>
+    </div>
+
+    <div class="report-date">
+        <p>تاريخ التقرير: @DateTime.Now.ToString("yyyy-MM-dd")</p>
+    </div>
+
+    <div class="report-summary">
+        <div class="summary-card">
+            <div class="card-icon"><i class="fas fa-dollar-sign"></i></div>
+            <div class="card-content">
+                <h3>إجمالي المبيعات</h3>
+                <h2>$@ViewBag.TotalSales</h2>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="card-icon"><i class="fas fa-shopping-cart"></i></div>
+            <div class="card-content">
+                <h3>عدد الطلبات</h3>
+                <h2>@ViewBag.TotalOrders</h2>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="card-icon"><i class="fas fa-clock"></i></div>
+            <div class="card-content">
+                <h3>طلبات قيد الانتظار</h3>
+                <h2>@ViewBag.PendingOrders</h2>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="card-icon"><i class="fas fa-truck"></i></div>
+            <div class="card-content">
+                <h3>طلبات تم شحنها</h3>
+                <h2>@ViewBag.ShippedOrders</h2>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="card-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="card-content">
+                <h3>طلبات تم تسليمها</h3>
+                <h2>@ViewBag.DeliveredOrders</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="report-charts">
+        <div class="chart-container">
+            <h3>المبيعات حسب الفئة</h3>
+            <div class="chart-wrapper">
+                <canvas id="categorySalesChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3>المنتجات الأكثر مبيعاً</h3>
+            <div class="chart-wrapper">
+                <canvas id="topProductsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="report-tables">
+        <div class="report-section">
+            <h3>المبيعات حسب الفئة</h3>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>الفئة</th>
+                            <th>المبيعات</th>
+                            <th>النسبة المئوية</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.CategorySales != null)
+                        {
+                            decimal totalSales = ViewBag.TotalSales;
+                            foreach (var category in ViewBag.CategorySales)
+                            {
+                                decimal percentage = totalSales > 0 ? (category.TotalSales / totalSales) * 100 : 0;
+                                <tr>
+                                    <td>@category.CategoryName</td>
+                                    <td>$@category.TotalSales</td>
+                                    <td>@percentage.ToString("0.00")%</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="report-section">
+            <h3>المنتجات الأكثر مبيعاً</h3>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>المنتج</th>
+                            <th>الكمية المباعة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.TopProducts != null)
+                        {
+                            int rank = 1;
+                            foreach (var product in ViewBag.TopProducts)
+                            {
+                                <tr>
+                                    <td>@rank</td>
+                                    <td>@product.ProductName</td>
+                                    <td>@product.TotalQuantity</td>
+                                </tr>
+                                rank++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function() {
+            // بيانات للرسم البياني - المبيعات حسب الفئة
+            const categoryLabels = [];
+            const categorySalesData = [];
+            const categoryColors = [
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 159, 64, 0.7)',
+                'rgba(199, 199, 199, 0.7)'
+            ];
+
+        @if (ViewBag.CategorySales != null)
+        {
+            foreach (var category in ViewBag.CategorySales)
+            {
+                <text>
+                            categoryLabels.push('@category.CategoryName');
+                            categorySalesData.push(@category.TotalSales);
+                </text>
+            }
+        }
+
+            // بيانات للرسم البياني - المنتجات الأكثر مبيعاً
+            const productLabels = [];
+            const productSalesData = [];
+
+        @if (ViewBag.TopProducts != null)
+        {
+            foreach (var product in ViewBag.TopProducts)
+            {
+                <text>
+                            productLabels.push('@product.ProductName');
+                            productSalesData.push(@product.TotalQuantity);
+                </text>
+            }
+        }
+
+            // رسم المبيعات حسب الفئة (رسم دائري)
+            const categorySalesChart = new Chart(
+                document.getElementById('categorySalesChart'),
+                {
+                    type: 'pie',
+                    data: {
+                        labels: categoryLabels,
+                        datasets: [{
+                            data: categorySalesData,
+                            backgroundColor: categoryColors,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                rtl: true,
+                                labels: {
+                                    font: {
+                                        family: 'Tajawal, sans-serif'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += '$' + context.raw;
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+
+            // رسم المنتجات الأكثر مبيعاً (رسم شريطي)
+            const topProductsChart = new Chart(
+                document.getElementById('topProductsChart'),
+                {
+                    type: 'bar',
+                    data: {
+                        labels: productLabels,
+                        datasets: [{
+                            label: 'الكمية المباعة',
+                            data: productSalesData,
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    font: {
+                                        family: 'Tajawal, sans-serif'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+
+            // تصدير التقرير إلى Excel
+            $('#exportExcel').click(function() {
+                // هنا يمكن إضافة الكود الخاص بتصدير التقرير إلى Excel
+                alert('سيتم تصدير التقرير إلى Excel');
+            });
+        });
+    </script>
+}

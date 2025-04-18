@@ -1,0 +1,96 @@
+﻿@model MasterPiece.Models.Product
+@{
+    ViewData["Title"] = "تفاصيل المنتج";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- صفحة تفاصيل المنتج -->
+<div class="product-container">
+    <div class="product-heading">
+        <h1 class="product-title">المنتج</h1>
+    </div>
+
+    <div class="product-details-container">
+        <!-- صورة المنتج -->
+        <div class="product-image-section">
+            <img src="~/img/@Model.Image" alt="@Model.Name" class="product-main-image" />
+
+            <!-- صور إضافية مصغرة -->
+            <div class="product-thumbnails">
+                <div class="thumbnail-item active">
+                    <img src="~/img/@Model.Image" alt="@Model.Name" />
+                </div>
+            </div>
+        </div>
+
+        <!-- معلومات المنتج -->
+        <div class="product-info-section">
+            <h2 class="product-name">@Model.Name</h2>
+
+            <!-- التقييم -->
+            <div class="product-rating">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                </div>
+                <span class="rating-count">(105 تقييم)</span>
+            </div>
+
+            <!-- السعر -->
+            <div class="product-price">
+                <span class="current-price">@(Model.Price)$</span>
+            </div>
+
+            <hr class="divider" />
+
+            <!-- حول السلعة -->
+            <div class="product-about">
+                <h3>حول هذه السلعة:</h3>
+                <div class="product-features">
+                    <div class="feature">
+                        <p>شاشة رتينا</p>
+                    </div>
+                    <div class="feature">
+                        <p>متوافقة مع أجهزة آي أو إس</p>
+                    </div>
+                    <div class="feature">
+                        <p>مع نظام تحديد المواقع</p>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="divider" />
+
+            <!-- اختيار اللون -->
+            <div class="color-selection">
+                <h3>حدد الألوان</h3>
+                <div class="color-options">
+                    <div class="color-option purple"></div>
+                    <div class="color-option dark-purple"></div>
+                    <div class="color-option yellow"></div>
+                    <div class="color-option green"></div>
+                    <div class="color-option blue"></div>
+                    <div class="color-option red"></div>
+                </div>
+            </div>
+
+            <!-- أزرار الكمية والإضافة للسلة -->
+            <div class="product-actions">
+                <a class="add-to-cart-btn" asp-controller="product" asp-action="addCart" asp-route-id="@Model.Id">
+                    أضف للسلة
+                </a>
+            </div>
+
+            <!-- تفاصيل المنتج الإضافية -->
+            <div class="product-description">
+                <p>@Model.Description</p>
+                <p>الكمية المتوفرة: @Model.Quantity</p>
+                <p>رقم التصنيف: @Model.CategoryId</p>
+                <p>رقم المنتج: @Model.Id</p>
+            </div>
+        </div>
+    </div>
+</div>

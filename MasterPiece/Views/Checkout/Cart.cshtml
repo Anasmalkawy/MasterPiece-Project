@@ -1,0 +1,298 @@
+﻿@model List<MasterPiece.Models.Cart>
+@{
+    ViewData["Title"] = "سلة المشتريات";
+    decimal total = 0;
+    foreach (var item in Model)
+    {
+        if (item.Product != null && item.Product.Price != null && item.Quantity != null)
+        {
+            total += (decimal)item.Product.Price * (int)item.Quantity;
+        }
+    }
+}
+
+<!-- يجب إضافة هذه الأسطر في ملف _Layout.cshtml في قسم head -->
+<!--
+<link rel="stylesheet" href="~/css/checkout.css">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+-->
+<!-- Loading Overlay -->
+<div class="page-loader">
+    <div class="loader"></div>
+</div>
+
+<!-- Header section with breadcrumbs -->
+<div class="heading">
+    <div class="heading-home">
+        <i class='bx bx-home'></i>
+        <a href="/">الرئيسية</a>
+        <i class='bx bx-chevron-left'></i>
+        <span>سلة المشتريات</span>
+    </div>
+    <div class="heading-home">
+        <span>سلة المشتريات</span>
+    </div>
+</div>
+
+<div class="container-left">
+    <div class="dashboard">
+        <h3 class="dashboard-title">طلباتي</h3>
+
+        <div class="orders-table">
+            <div class="table-header">
+                <div class="cell">#</div>
+                <div class="cell">صورة</div>
+                <div class="cell">اسم المنتج</div>
+                <div class="cell">السعر</div>
+                <div class="cell">الكمية</div>
+                <div class="cell">الاجمالى</div>
+                <div class="cell">حذف</div>
+            </div>
+            <div class="divider"><hr></div>
+
+            @if (Model.Count > 0)
+            {
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    var item = Model[i];
+                    decimal itemTotal = 0;
+                    if (item.Product != null && item.Product.Price != null && item.Quantity != null)
+                    {
+                        itemTotal = (decimal)item.Product.Price * (int)item.Quantity;
+                    }
+
+                    <div class="table-row" data-product-id="@item.ProductId">
+                        <div class="cell">@(i + 1)</div>
+                        <div class="cell cart-cell cart-image">
+                            <img src="~/img/@item.Product.Image" alt="صورة المنتج">
+                        </div>
+                        <div class="cell cart-cell cart-product-name">
+                            <a href="/Product/Details/@item.ProductId">@item.Product.Description</a>
+                        </div>
+                        <div class="cell cart-cell cart-price">$@item.Product.Price</div>
+                        <div class="cell cart-cell cart-quantity">
+                            <form asp-controller="Checkout" asp-action="UpdateCartQuantity" method="post" class="quantity-form">
+                                <input type="hidden" name="cartId" value="@item.Id" />
+                                <div class="quantity-controls">
+                                    <button class="quantity-button minus" type="button" onclick="decrementQuantity(@item.Id)">-</button>
+                                    <input type="number" class="quantity-input" name="quantity" value="@item.Quantity" id="quantity-@item.Id" min="1">
+                                    <button class="quantity-button plus" type="button" onclick="incrementQuantity(@item.Id)">+</button>
+                                </div>
+                                <button type="submit" class="update-btn">تحديث</button>
+                            </form>
+                        </div>
+                        <div class="cell cart-cell cart-total">$@itemTotal.ToString("0.00")</div>
+                        <div class="cell cart-cell cart-x">
+                            <form asp-controller="Checkout" asp-action="RemoveFromCart" method="post" class="remove-form">
+                                <input type="hidden" name="cartId" value="@item.Id" />
+                                <button type="submit" class="remove-btn" title="إزالة من السلة"><i class='bx bx-x'></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="divider"><hr></div>
+                }
+            }
+            else
+            {
+                <div class="empty-cart">
+                    <div class="empty-cart-icon">
+                        <i class='bx bx-cart-alt'></i>
+                    </div>
+                    <p>لا توجد منتجات في سلة المشتريات</p>
+                    <a href="/Product/Index" class="continue-shopping">تصفح المنتجات</a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <aside class="aside-card">
+        <div class="order-summary">
+            <h3>ملخص الطلبية</h3>
+            <div class="order-subtotal">
+                <span>المجموع الفرعي</span>
+                <p>$@total.ToString("0.00")</p>
+            </div>
+            <div class="shipping-info">
+                <span>الشحن</span>
+                <p>مجاني</p>
+            </div>
+            <!-- سيتم إضافة قسم الخصم هنا ديناميكياً عند تطبيق كود الخصم -->
+            <div class="order-total">
+                <span>المجموع</span>
+                <p>$@total.ToString("0.00")</p>
+            </div>
+        </div>
+        <hr>
+        <div class="discount-input-container">
+            <input type="text" class="discount-input" placeholder="كود الخصم" id="discount-code">
+            <a href="#" class="apply-discount">تطبيق</a>
+        </div>
+
+        @if (Model.Count > 0)
+        {
+            <div class="checkout-button">
+                <a asp-controller="Checkout" asp-action="Checkout">
+                    <span>اتمام الشراء</span>
+                    <i class='bx bx-chevron-left'></i>
+                </a>
+            </div>
+
+            <div class="continue-shopping-link">
+                <a href="/Product/Index">
+                    <i class='bx bx-arrow-back'></i>
+                    <span>متابعة التسوق</span>
+                </a>
+            </div>
+        }
+    </aside>
+</div>
+
+@section Scripts {
+    <script src="~/js/checkout.js"></script>
+    <script>
+        // إضافة فئة التحميل عند بدء الصفحة
+        document.body.classList.add('loading');
+
+        // إزالة فئة التحميل بعد تحميل الصفحة
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.body.classList.remove('loading');
+                document.querySelector('.page-loader').style.display = 'none';
+            }, 500);
+        });
+
+        // استبدال الدوال الأصلية
+        function incrementQuantity(cartId) {
+            let inputElement = document.getElementById('quantity-' + cartId);
+            inputElement.value = parseInt(inputElement.value) + 1;
+            updateItemTotal(cartId);
+        }
+
+        function decrementQuantity(cartId) {
+            let inputElement = document.getElementById('quantity-' + cartId);
+            if (parseInt(inputElement.value) > 1) {
+                inputElement.value = parseInt(inputElement.value) - 1;
+                updateItemTotal(cartId);
+            }
+        }
+
+        // تحديث إجمالي المنتج
+        function updateItemTotal(cartId) {
+            const quantityInput = document.getElementById('quantity-' + cartId);
+            if (!quantityInput) return;
+
+            const tableRow = quantityInput.closest('.table-row');
+            const priceElement = tableRow.querySelector('.cart-price');
+            const totalElement = tableRow.querySelector('.cart-total');
+
+            const quantity = parseInt(quantityInput.value);
+            const price = parseFloat(priceElement.textContent.replace('$', ''));
+            const total = (quantity * price).toFixed(2);
+
+            totalElement.textContent = '$' + total;
+
+            // تحديث الإجمالي الكلي
+            updateCartTotal();
+        }
+
+        // تحديث إجمالي السلة
+        function updateCartTotal() {
+            const totalElements = document.querySelectorAll('.cart-total');
+            let subtotal = 0;
+
+            totalElements.forEach(element => {
+                subtotal += parseFloat(element.textContent.replace('$', ''));
+            });
+
+            // تحديث المجموع الفرعي والإجمالي
+            const subtotalElement = document.querySelector('.order-subtotal p');
+            const totalElement = document.querySelector('.order-total p');
+
+            subtotalElement.textContent = '$' + subtotal.toFixed(2);
+            totalElement.textContent = '$' + subtotal.toFixed(2);
+        }
+
+        // تفعيل كود الخصم
+        document.querySelector('.apply-discount').addEventListener('click', function(e) {
+            e.preventDefault();
+            const discountCode = document.getElementById('discount-code').value.trim();
+
+            if (discountCode) {
+                if (discountCode === 'WELCOME10') {
+                    // حساب الخصم (10%)
+                    const subtotalElement = document.querySelector('.order-subtotal p');
+                    const totalElement = document.querySelector('.order-total p');
+
+                    const subtotal = parseFloat(subtotalElement.textContent.replace('$', ''));
+                    const discount = subtotal * 0.1;
+                    const newTotal = (subtotal - discount).toFixed(2);
+
+                    // إضافة صف الخصم إذا لم يكن موجودًا
+                    if (!document.querySelector('.order-discount')) {
+                        const discountRow = document.createElement('div');
+                        discountRow.classList.add('order-discount');
+                        discountRow.innerHTML = `
+                            <span>خصم (10%)</span>
+                            <p>-$${discount.toFixed(2)}</p>
+                        `;
+
+                        // إضافة قبل المجموع الكلي
+                        const orderTotal = document.querySelector('.order-total');
+                        orderTotal.parentNode.insertBefore(discountRow, orderTotal);
+                    } else {
+                        // تحديث قيمة الخصم
+                        document.querySelector('.order-discount p').textContent = `-$${discount.toFixed(2)}`;
+                    }
+
+                    // تحديث المجموع الكلي
+                    totalElement.textContent = '$' + newTotal;
+
+                    // إظهار إشعار نجاح
+                    showNotification('تم تطبيق الخصم بنجاح!', 'success');
+                } else {
+                    showNotification('كود الخصم غير صالح!', 'error');
+                }
+            } else {
+                showNotification('الرجاء إدخال كود الخصم!', 'error');
+            }
+        });
+
+        // دالة إظهار الإشعارات
+        function showNotification(message, type) {
+            // إنشاء عنصر الإشعار
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-x-circle'}'></i>
+                    <span>${message}</span>
+                </div>
+                <button class="notification-close"><i class='bx bx-x'></i></button>
+            `;
+
+            // إضافة الإشعار للصفحة
+            document.body.appendChild(notification);
+
+            // إظهار الإشعار
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+
+            // إغلاق الإشعار تلقائيًا بعد 3 ثوانٍ
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+
+            // زر إغلاق الإشعار
+            notification.querySelector('.notification-close').addEventListener('click', () => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            });
+        }
+    </script>
+}

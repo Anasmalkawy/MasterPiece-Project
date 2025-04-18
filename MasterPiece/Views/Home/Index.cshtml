@@ -1,0 +1,213 @@
+﻿@model List<MasterPiece.Models.Product>
+@{
+    ViewData["Title"] = "الرئيسية";
+}
+
+<!-- قسم الهيرو المحسن -->
+<div class="hero-container" dir="rtl">
+    <img src="~/img/Screenshot 2025-04-09 201745.png" class="hero-image" alt="MasterPiece - متجرك الإلكتروني المتكامل" />
+    <div class="hero-overlay">
+        <h1 class="hero-title">متجر ماستر بيس الإلكتروني</h1>
+        <p class="hero-subtitle">أحدث المنتجات التقنية بأفضل الأسعار</p>
+        <a href="#latest-products" class="hero-button">تسوق الآن</a>
+    </div>
+</div>
+
+<!-- شريط الإحصائيات -->
+<div class="stats-bar py-4 bg-light mb-5" dir="rtl">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 col-6 mb-3 mb-md-0">
+                <div class="stat-item">
+                    <i class='bx bxs-truck text-primary mb-2 display-6'></i>
+                    <h5 class="fw-bold">شحن سريع</h5>
+                    <p class="text-muted small mb-0">لجميع مناطق المملكة</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3 mb-md-0">
+                <div class="stat-item">
+                    <i class='bx bxs-shield-alt-2 text-primary mb-2 display-6'></i>
+                    <h5 class="fw-bold">ضمان الجودة</h5>
+                    <p class="text-muted small mb-0">منتجات أصلية 100%</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <i class='bx bxs-credit-card text-primary mb-2 display-6'></i>
+                    <h5 class="fw-bold">دفع آمن</h5>
+                    <p class="text-muted small mb-0">خيارات دفع متعددة</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <i class='bx bxs-phone text-primary mb-2 display-6'></i>
+                    <h5 class="fw-bold">دعم فني</h5>
+                    <p class="text-muted small mb-0">متاح على مدار اليوم</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ قسم اللابتوبات -->
+<section id="latest-products" class="product-section mb-5" dir="rtl" data-aos="fade-up">
+    <div class="container">
+        <div class="section-title text-end mb-4">
+            <h3 class="fw-bold border-end pe-3 border-4 border-primary d-inline-block">لابتوبات</h3>
+            <span class="float-start">
+                <a href="#" class="btn btn-outline-primary rounded-pill">مشاهدة الكل <i class='bx bx-left-arrow-alt'></i></a>
+            </span>
+        </div>
+        <div class="row g-4">
+            @foreach (var product in Model.Where(p => p.CategoryId == 1))
+            {
+                <div class="col-md-6 col-lg-4 col-xl-3" data-aos="fade-up" data-aos-delay="@((product.Id % 4) * 100)">
+                    <div class="product-card border-0 h-100 shadow-sm">
+                        <div class="product-img-container">
+                            <img src="~/img/@product.Image" class="card-img-top" alt="@product.Name" />
+                            @if (product.Id % 4 == 0)
+                            {
+                                <span class="discount-badge">خصم @(15 + (product.Id % 10))%</span>
+                            }
+                        </div>
+                        <div class="card-body text-end">
+                            <h5 class="product-name">@product.Name</h5>
+                            <p class="product-price mb-3">$@product.Price</p>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a asp-controller="product" asp-action="addCart" asp-route-id="@product.Id" class="btn icon-btn add-to-cart-btn" title="أضف للسلة">
+                                    <i class='bx bxs-shopping-bags'></i>
+                                </a>
+                                <a asp-controller="product" asp-action="singleproduct" asp-route-id="@product.Id" class="btn icon-btn" title="عرض التفاصيل">
+                                    <i class='bx bx-show-alt'></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- قسم الترويج (سيتم إضافته من خلال JavaScript) -->
+<div id="promo-section-container"></div>
+
+<!-- ✅ قسم الجوالات -->
+<section class="product-section mb-5" dir="rtl" data-aos="fade-up">
+    <div class="container">
+        <div class="section-title text-end mb-4">
+            <h3 class="fw-bold border-end pe-3 border-4 border-success d-inline-block">جوالات</h3>
+            <span class="float-start">
+                <a href="#" class="btn btn-outline-success rounded-pill">مشاهدة الكل <i class='bx bx-left-arrow-alt'></i></a>
+            </span>
+        </div>
+        <div class="row g-4">
+            @foreach (var product in Model.Where(p => p.CategoryId == 2))
+            {
+                <div class="col-md-6 col-lg-4 col-xl-3" data-aos="fade-up" data-aos-delay="@((product.Id % 4) * 100)">
+                    <div class="product-card border-0 h-100 shadow-sm">
+                        <div class="product-img-container">
+                            <img src="~/img/@product.Image" class="card-img-top" alt="@product.Name" />
+                            @if (product.Id % 3 == 0)
+                            {
+                                <span class="discount-badge">خصم @(10 + (product.Id % 15))%</span>
+                            }
+                        </div>
+                        <div class="card-body text-end">
+                            <h5 class="product-name">@product.Name</h5>
+                            <p class="product-price mb-3">$@product.Price</p>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a asp-controller="product" asp-action="addCart" asp-route-id="@product.Id" class="btn icon-btn add-to-cart-btn" title="أضف للسلة">
+                                    <i class='bx bxs-shopping-bags'></i>
+                                </a>
+                                <a asp-controller="product" asp-action="singleproduct" asp-route-id="@product.Id" class="btn icon-btn" title="عرض التفاصيل">
+                                    <i class='bx bx-show-alt'></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ✅ قسم الإكسسوارات -->
+<section class="product-section mb-5" dir="rtl" data-aos="fade-up">
+    <div class="container">
+        <div class="section-title text-end mb-4">
+            <h3 class="fw-bold border-end pe-3 border-4 border-warning d-inline-block">إكسسوارات</h3>
+            <span class="float-start">
+                <a href="#" class="btn btn-outline-warning rounded-pill">مشاهدة الكل <i class='bx bx-left-arrow-alt'></i></a>
+            </span>
+        </div>
+        <div class="row g-4">
+            @foreach (var product in Model.Where(p => p.CategoryId == 3))
+            {
+                <div class="col-md-6 col-lg-4 col-xl-3" data-aos="fade-up" data-aos-delay="@((product.Id % 4) * 100)">
+                    <div class="product-card border-0 h-100 shadow-sm">
+                        <div class="product-img-container">
+                            <img src="~/img/@product.Image" class="card-img-top" alt="@product.Name" />
+                            @if (product.Id % 5 == 0)
+                            {
+                                <span class="discount-badge">خصم @(10 + (product.Id % 20))%</span>
+                            }
+                        </div>
+                        <div class="card-body text-end">
+                            <h5 class="product-name">@product.Name</h5>
+                            <p class="product-price mb-3">$@product.Price</p>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a asp-controller="product" asp-action="addCart" asp-route-id="@product.Id" @* class="btn icon-btn add-to-cart-btn" *@ title="أضف للسلة">
+                                    <i class='bx bxs-shopping-bags'></i>
+                                </a>
+                                <a asp-controller="product" asp-action="singleproduct" asp-route-id="@product.Id" class="btn icon-btn" title="عرض التفاصيل">
+                                    <i class='bx bx-show-alt'></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+<!-- قسم الاشتراك في النشرة البريدية -->
+<section class="newsletter-section py-5 bg-light" dir="rtl" data-aos="fade-up">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h3 class="fw-bold mb-3">اشترك في نشرتنا البريدية</h3>
+                <p class="text-muted mb-4">احصل على آخر العروض والتخفيضات مباشرة إلى بريدك الإلكتروني</p>
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="email" class="form-control form-control-lg" placeholder="البريد الإلكتروني">
+                            <button class="btn btn-primary px-4">اشتراك</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- قسم العلامات التجارية (سيتم إضافته من خلال JavaScript) -->
+<div id="brands-section-container"></div>
+
+@section Scripts {
+    <!-- تضمين مكتبة AOS للتأثيرات الحركية -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+    <!-- تضمين ملف JavaScript المخصص -->
+    <script src="~/js/homepage.js"></script>
+
+    <!-- تفعيل Bootstrap Toasts -->
+    <script>
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+        var toastList = toastElList.map(function(toastEl) {
+            return new bootstrap.Toast(toastEl);
+        });
+
+    </script>
+}

@@ -1,0 +1,149 @@
+﻿@model MasterPiece.Models.User
+
+@{
+    ViewData["Title"] = "لوحة التحكم";
+    var user = ViewBag.User;
+    var orders = ViewBag.RecentOrders as List<Order>;
+}
+
+<link rel="stylesheet" href="~/css/profile-shared.css" />
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+<main>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar-profile">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">حسابي</h2>
+            </div>
+            <div class="sidebar-links">
+                <div class="sidebar-link active">
+                    <i class='bx bx-user'></i>
+                    <a asp-action="profile">لوحة التحكم</a>
+                </div>
+                <div class="sidebar-link">
+                    <i class='bx bxs-truck'></i>
+                    <a asp-area="" asp-controller="profile" asp-action="Orders">طلباتي</a>
+                </div>
+                <div class="sidebar-link">
+                    <i class='bx bxs-lock-alt'></i>
+                    <a asp-action="ChangePassword">تغيير كلمة المرور</a>
+                </div>
+                <div class="sidebar-link">
+                    <i class='bx bx-log-out'></i>
+                    <a asp-controller="profile" asp-action="logout">خروج</a>
+                </div>
+            </div>
+        </aside>
+
+        <div class="profile-content">
+            <h3 class="profile-title">لوحة التحكم</h3>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class='bx bx-check-circle'></i> @TempData["Success"]
+                </div>
+            }
+
+            @if (user != null)
+            {
+                <div class="user-info">
+                    <div class="user-row">
+                        <span class="user-label">الاسم:</span>
+                        <p>@user.Name</p>
+                    </div>
+                    <div class="user-row">
+                        <span class="user-label">البريد الإلكتروني:</span>
+                        <p>@user.Email</p>
+                    </div>
+                    <div class="user-row">
+                        <span class="user-label">الهاتف:</span>
+                        <p>@user.Phone</p>
+                    </div>
+                    <div class="user-row">
+                        <span class="user-label">نوع الحساب:</span>
+                        <p>@(user.Role ?? "مستخدم")</p>
+                    </div>
+                </div>
+            }
+
+            <button class="btn-edit-profile">
+                <i class='bx bx-edit'></i>
+                <a asp-action="EditProfile">تعديل الحساب</a>
+            </button>
+
+            <hr style="margin: 2rem 0; border-color: var(--border-color);" />
+
+            <h4 style="margin-bottom: 1rem; font-size: 1.2rem; color: var(--secondary-color);">
+                <i class='bx bx-history'></i> آخر الطلبات
+            </h4>
+
+            @if (ViewBag.RecentOrders != null && ((List<Order>)ViewBag.RecentOrders).Any())
+            {
+                <div class="orders-box">
+                    <div class="orders-header">
+                        <div class="order-cell">#</div>
+                        <div class="order-cell">معرف الطلب</div>
+                        <div class="order-cell">الحالة</div>
+                        <div class="order-cell">تاريخ الطلب</div>
+                        <div class="order-cell"></div>
+                    </div>
+
+                    @{
+                        int i = 1;
+                        foreach (var order in (List<Order>)ViewBag.RecentOrders)
+                        {
+                            <div class="order-row">
+                                <div class="order-cell">@i</div>
+                                <div class="order-cell order-id">#@order.Id</div>
+                                <div class="order-cell status-cell">
+                                    <span class="status-badge @GetStatusClass(order.Status)">
+                                        @order.Status
+                                    </span>
+                                </div>
+                                <div class="order-cell">
+                                    @((order.OrderDate.HasValue)
+                                    ? order.OrderDate.Value.ToString("dd MMM yyyy")
+                                    : "بدون تاريخ")
+                                </div>
+                                <div class="order-cell">
+                                    <a asp-action="Orders" class="view-details-btn">
+                                        عرض المزيد <i class='bx bx-chevron-left'></i>
+                                    </a>
+                                </div>
+                            </div>
+                            i++;
+                        }
+                    }
+                </div>
+            }
+            else
+            {
+                <div style="text-align: center; padding: 2rem; background-color: #f8f9fa; border-radius: 8px;">
+                    <i class='bx bx-package' style="font-size: 3rem; color: var(--secondary-color);"></i>
+                    <p style="margin-top: 1rem;">لا توجد طلبات سابقة</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+</main>
+
+<script src="~/js/profile-shared.js"></script>
+
+@functions {
+    public string GetStatusClass(string status)
+    {
+        if (status == null) return "";
+
+        return status.ToLower() switch
+        {
+            "pending" or "قيد الانتظار" => "status-pending",
+            "completed" or "مكتمل" => "status-completed",
+            "shipped" or "تم الشحن" => "status-shipped",
+            "cancelled" or "ملغي" => "status-cancelled",
+            _ => ""
+        };
+    }
+}

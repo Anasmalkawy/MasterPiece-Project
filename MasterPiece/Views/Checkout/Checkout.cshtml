@@ -1,0 +1,335 @@
+﻿@model MasterPiece.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "الدفع";
+}
+
+<!-- يجب إضافة هذه الأسطر في ملف _Layout.cshtml في قسم head -->
+<!--
+<link rel="stylesheet" href="~/css/checkout.css">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+-->
+<!-- Loading Overlay -->
+<div class="page-loader">
+    <div class="loader"></div>
+</div>
+
+<!-- Header section with breadcrumbs -->
+<div class="heading">
+    <div class="heading-home">
+        <i class='bx bx-home'></i>
+        <a href="/">الرئيسية</a>
+        <i class='bx bx-chevron-left'></i>
+        <a href="/Checkout/Cart">سلة المشتريات</a>
+        <i class='bx bx-chevron-left'></i>
+        <span>الدفع</span>
+    </div>
+    <div class="heading-home">
+        <div class="checkout-steps">
+            <div class="step active">
+                <span class="step-number">1</span>
+                <span class="step-text">معلومات الشحن</span>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <span class="step-text">تأكيد الطلب</span>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step">
+                <span class="step-number">3</span>
+                <span class="step-text">اكتمال الطلب</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-center">
+    <!-- القسم الجانبي لعرض المنتجات -->
+    <aside class="checkout-aside">
+        <div class="aside-header">
+            <a href="#" class="products-link">
+                <i class='bx bx-package'></i>
+                <span>المنتجات</span>
+            </a>
+            <span class="items-count">(@Model.CartItems.Count)</span>
+        </div>
+
+        <div class="checkout-products">
+            @if (Model.CartItems != null && Model.CartItems.Any())
+            {
+                foreach (var item in Model.CartItems)
+                {
+                    if (item != null && item.Product != null)
+                    {
+                        <div class="checkout-box">
+                            <div class="product-image">
+                                <img src="~/img/@item.Product.Image" alt="@item.Product.Description">
+                                <span class="product-quantity">@item.Quantity</span>
+                            </div>
+                            <div class="product-details">
+                                <h4><a href="/Product/Details/@item.ProductId">@item.Product.Description</a></h4>
+                                <div class="product-price">
+                                    <span class="price">$@item.Product.Price</span>
+                                    <span class="total">$@((item.Product.Price * item.Quantity))</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divider"><hr></div>
+                    }
+                }
+            }
+            else
+            {
+                <div class="empty-cart-message">
+                    <i class='bx bx-cart'></i>
+                    <p>لا توجد منتجات في سلة التسوق</p>
+                    <a href="/Product/Index" class="continue-shopping">تصفح المنتجات</a>
+                </div>
+            }
+        </div>
+
+        <div class="discount-input-container">
+            <input type="text" class="discount-input" placeholder="كود الخصم" id="discount-code">
+            <a href="#" class="apply-discount">تطبيق</a>
+        </div>
+
+        <div class="divider1"><hr></div>
+
+        <div class="totals">
+            <div class="total-row">
+                <span>مجموع المنتجات</span>
+                <span>$@Model.Subtotal.ToString("0.00")</span>
+            </div>
+            <div class="total-row">
+                <span>خصم</span>
+                <span>$@Model.Discount.ToString("0.00")</span>
+            </div>
+            <div class="total-row">
+                <span>توصيل</span>
+                <span class="free-shipping">مجاني <i class='bx bx-check'></i></span>
+            </div>
+            <div class="total-row1">
+                <span>الاجمالى</span>
+                <span>$@Model.Total.ToString("0.00")</span>
+            </div>
+        </div>
+
+        <div class="secure-checkout">
+            <div class="secure-icon">
+                <i class='bx bx-lock-alt'></i>
+            </div>
+            <p>جميع المعاملات آمنة ومشفرة</p>
+        </div>
+    </aside>
+
+    <!-- قسم نموذج الشحن -->
+    <div class="checkout-home">
+        <div class="container-checkout">
+            <div class="payment-logo">
+                <img src="~/img/paymat.png" alt="Payment Logo">
+            </div>
+
+            <div class="checkout-title">
+                <h2>معلومات الشحن</h2>
+                <p>يرجى إدخال عنوان الشحن الخاص بك</p>
+            </div>
+
+            <form asp-controller="Checkout" asp-action="ProcessShipping" method="post" class="checkout-form">
+                <!-- الحقول المخفية -->
+                <input type="hidden" asp-for="Status" value="Pending" />
+                <input type="hidden" asp-for="PaymentMethod" value="COD" />
+                <input type="hidden" asp-for="ShippingDate" value="@DateTime.Now.AddDays(2)" />
+                <input type="hidden" asp-for="DeliveryDate" value="@DateTime.Now.AddDays(5)" />
+                <input type="hidden" asp-for="Subtotal" value="@Model.Subtotal" />
+                <input type="hidden" asp-for="Discount" value="@Model.Discount" />
+                <input type="hidden" asp-for="Total" value="@Model.Total" />
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="CustomerName">الاسم الكامل <span class="required">*</span></label>
+                        <input asp-for="CustomerName" type="text" placeholder="أدخل الاسم الكامل" required>
+                        <span asp-validation-for="CustomerName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="PhoneNumber">رقم الهاتف <span class="required">*</span></label>
+                        <input asp-for="PhoneNumber" type="tel" placeholder="أدخل رقم الهاتف" required>
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Address">العنوان التفصيلي <span class="required">*</span></label>
+                    <textarea asp-for="Address" rows="3" placeholder="اسم الشارع / رقم المبنى / رقم الشقة" required></textarea>
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="City">المدينة <span class="required">*</span></label>
+                        <input asp-for="City" type="text" placeholder="أدخل اسم المدينة" required>
+                        <span asp-validation-for="City" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="PostalCode">الرمز البريدي <span class="required">*</span></label>
+                        <input asp-for="PostalCode" type="text" placeholder="أدخل الرمز البريدي" required>
+                        <span asp-validation-for="PostalCode" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Country">الدولة <span class="required">*</span></label>
+                    <select asp-for="Country" required>
+                        <option value="">اختر الدولة</option>
+                        <option value="المملكة العربية السعودية">المملكة العربية السعودية</option>
+                        <option value="الإمارات العربية المتحدة">الإمارات العربية المتحدة</option>
+                        <option value="مصر">مصر</option>
+                        <option value="الأردن">الأردن</option>
+                        <option value="الكويت">الكويت</option>
+                        <option value="قطر">قطر</option>
+                        <option value="البحرين">البحرين</option>
+                        <option value="عمان">عمان</option>
+                        <option value="لبنان">لبنان</option>
+                        <!-- يمكن إضافة المزيد من الدول حسب الحاجة -->
+                    </select>
+                    <span asp-validation-for="Country" class="text-danger"></span>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/Checkout/Cart" class="back-button">
+                        <i class='bx bx-arrow-back'></i>
+                        <span>الرجوع للسلة</span>
+                    </a>
+                    <button type="submit" class="continue-button">
+                        <span>متابعة الشراء</span>
+                        <i class='bx bx-chevron-left'></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/checkout.js"></script>
+    <script>
+        // إضافة فئة التحميل عند بدء الصفحة
+        document.body.classList.add('loading');
+
+        // إزالة فئة التحميل بعد تحميل الصفحة
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.body.classList.remove('loading');
+                document.querySelector('.page-loader').style.display = 'none';
+            }, 500);
+        });
+
+        // تفعيل التحقق من صحة النموذج
+        document.querySelector('.checkout-form').addEventListener('submit', function(e) {
+            // التحقق من ملء جميع الحقول المطلوبة
+            const requiredFields = this.querySelectorAll('[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('error');
+
+                    // إضافة رسالة خطأ
+                    const errorMessage = field.nextElementSibling;
+                    if (errorMessage && errorMessage.classList.contains('text-danger')) {
+                        errorMessage.textContent = 'هذا الحقل مطلوب';
+                    }
+                } else {
+                    field.classList.remove('error');
+
+                    // إزالة رسالة الخطأ
+                    const errorMessage = field.nextElementSibling;
+                    if (errorMessage && errorMessage.classList.contains('text-danger')) {
+                        errorMessage.textContent = '';
+                    }
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+
+                // عرض رسالة تنبيه
+                showNotification('يرجى ملء جميع الحقول المطلوبة', 'error');
+
+                // التمرير إلى أول حقل به خطأ
+                const firstErrorField = this.querySelector('.error');
+                if (firstErrorField) {
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrorField.focus();
+                }
+            }
+        });
+
+        // تأثيرات إضافية للنموذج
+        const formInputs = document.querySelectorAll('.form-group input, .form-group textarea, .form-group select');
+
+        formInputs.forEach(input => {
+            // تأثير التركيز
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+
+                // إضافة فئة "has-value" إذا كان الحقل يحتوي على قيمة
+                if (this.value.trim()) {
+                    this.parentElement.classList.add('has-value');
+                } else {
+                    this.parentElement.classList.remove('has-value');
+                }
+            });
+
+            // تعيين حالة "has-value" أثناء التحميل
+            if (input.value.trim()) {
+                input.parentElement.classList.add('has-value');
+            }
+        });
+
+        // دالة إظهار الإشعارات
+        function showNotification(message, type) {
+            // إنشاء عنصر الإشعار
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-x-circle'}'></i>
+                    <span>${message}</span>
+                </div>
+                <button class="notification-close"><i class='bx bx-x'></i></button>
+            `;
+
+            // إضافة الإشعار للصفحة
+            document.body.appendChild(notification);
+
+            // إظهار الإشعار
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+
+            // إغلاق الإشعار تلقائيًا بعد 3 ثوانٍ
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+
+            // زر إغلاق الإشعار
+            notification.querySelector('.notification-close').addEventListener('click', () => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            });
+        }
+    </script>
+}

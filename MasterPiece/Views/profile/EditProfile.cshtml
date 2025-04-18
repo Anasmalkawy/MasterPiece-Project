@@ -1,0 +1,97 @@
+﻿@model MasterPiece.Models.User
+
+@{
+    ViewData["Title"] = "تعديل الحساب";
+}
+
+<link rel="stylesheet" href="~/css/profile-shared.css" />
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+<main>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar-profile">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">حسابي</h2>
+            </div>
+            <div class="sidebar-links">
+                <div class="sidebar-link">
+                    <i class='bx bx-user'></i>
+                    <a asp-action="profile">لوحة التحكم</a>
+                </div>
+                <div class="sidebar-link">
+                    <i class='bx bxs-truck'></i>
+                    <a asp-action="Orders">طلباتي</a>
+                </div>
+                <div class="sidebar-link">
+                    <i class='bx bxs-lock-alt'></i>
+                    <a asp-action="ChangePassword">تغيير كلمة المرور</a>
+                </div>
+                <div class="sidebar-link">
+                    <i class='bx bx-log-out'></i>
+                    <a asp-controller="profile" asp-action="logout">خروج</a>
+                </div>
+            </div>
+        </aside>
+
+        <div class="profile-content">
+            <h3 class="profile-title">تعديل بيانات الحساب</h3>
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">
+                    <i class='bx bx-error-circle'></i> @TempData["Error"]
+                </div>
+            }
+
+            <form asp-action="EditProfile" method="post" class="user-info">
+                <div class="user-row">
+                    <label class="user-label" asp-for="Name">
+                        <i class='bx bx-user'></i> الاسم:
+                    </label>
+                    <div style="flex: 1;">
+                        <input asp-for="Name" class="form-control" required />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <label class="user-label" asp-for="Email">
+                        <i class='bx bx-envelope'></i> البريد الإلكتروني:
+                    </label>
+                    <div style="flex: 1;">
+                        <input asp-for="Email" class="form-control" type="email" required />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <label class="user-label" asp-for="Phone">
+                        <i class='bx bx-phone'></i> رقم الهاتف:
+                    </label>
+                    <div style="flex: 1;">
+                        <input asp-for="Phone" class="form-control" type="tel" required />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions" style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn-edit-profile">
+                        <i class='bx bx-save'></i> حفظ التغييرات
+                    </button>
+
+                    <a asp-action="profile" style="display: flex; align-items: center; justify-content: center; padding: 0.8rem 1.5rem; background-color: #f8f9fa; color: var(--secondary-color); border-radius: 8px; font-weight: 600; border: 1px solid var(--border-color);">
+                        <i class='bx bx-arrow-back'></i> إلغاء
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+</main>
+
+<script src="~/js/profile-shared.js"></script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

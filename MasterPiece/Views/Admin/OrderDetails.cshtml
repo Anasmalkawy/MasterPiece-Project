@@ -1,0 +1,175 @@
+﻿@model MasterPiece.Models.Order
+@{
+    ViewData["Title"] = "تفاصيل الطلب";
+    Layout = "_AdminLayout";
+    var shipping = Model.Shippings.FirstOrDefault();
+    var payment = Model.Payments.FirstOrDefault();
+    decimal totalAmount = 0;
+}
+
+<div class="admin-order-details">
+    <div class="page-header">
+        <h1>تفاصيل الطلب #@Model.Id</h1>
+        <a href="@Url.Action("Orders", "Admin")" class="back-btn">
+            <i class="fas fa-arrow-right"></i> العودة للطلبات
+        </a>
+    </div>
+
+    <div class="order-overview">
+        <div class="status-timeline">
+            <div class="timeline-step @(Model.Status == "Pending" || Model.Status == "Shipped" || Model.Status == "Delivered" ? "active" : "")">
+                <div class="step-icon"><i class="fas fa-clipboard-check"></i></div>
+                <div class="step-label">تم استلام الطلب</div>
+            </div>
+            <div class="timeline-connector"></div>
+            <div class="timeline-step @(Model.Status == "Shipped" || Model.Status == "Delivered" ? "active" : "")">
+                <div class="step-icon"><i class="fas fa-truck"></i></div>
+                <div class="step-label">تم شحن الطلب</div>
+            </div>
+            <div class="timeline-connector"></div>
+            <div class="timeline-step @(Model.Status == "Delivered" ? "active" : "")">
+                <div class="step-icon"><i class="fas fa-home"></i></div>
+                <div class="step-label">تم التسليم</div>
+            </div>
+        </div>
+
+        <div class="order-status-update">
+            <h3>تحديث حالة الطلب</h3>
+            <div class="status-buttons">
+                <form asp-action="UpdateOrderStatus" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="status" value="Pending" />
+                    <button type="submit" class="status-btn @(Model.Status == "Pending" ? "active" : "")" title="قيد الانتظار">
+                        <i class="fas fa-clock"></i> قيد الانتظار
+                    </button>
+                </form>
+
+                <form asp-action="UpdateOrderStatus" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="status" value="Shipped" />
+                    <button type="submit" class="status-btn @(Model.Status == "Shipped" ? "active" : "")" title="تم الشحن">
+                        <i class="fas fa-truck"></i> تم الشحن
+                    </button>
+                </form>
+
+                <form asp-action="UpdateOrderStatus" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="status" value="Delivered" />
+                    <button type="submit" class="status-btn @(Model.Status == "Delivered" ? "active" : "")" title="تم التسليم">
+                        <i class="fas fa-check-circle"></i> تم التسليم
+                    </button>
+                </form>
+
+                <form asp-action="UpdateOrderStatus" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="status" value="Cancelled" />
+                    <button type="submit" class="status-btn @(Model.Status == "Cancelled" ? "active" : "")" title="ملغي">
+                        <i class="fas fa-times-circle"></i> ملغي
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="order-info-cards">
+        <div class="info-card">
+            <div class="card-header">
+                <h3><i class="fas fa-user"></i> معلومات العميل</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>الاسم:</strong> @(Model.User?.Name ?? "غير متوفر")</p>
+                <p><strong>البريد الإلكتروني:</strong> @(Model.User?.Email ?? "غير متوفر")</p>
+                <p><strong>رقم الهاتف:</strong> @(Model.User?.Phone ?? 0)</p>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="card-header">
+                <h3><i class="fas fa-shipping-fast"></i> معلومات الشحن</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>العنوان:</strong> @(shipping?.Address ?? "غير متوفر")</p>
+                <p><strong>المدينة:</strong> @(shipping?.City ?? "غير متوفر")</p>
+                <p><strong>الدولة:</strong> @(shipping?.Country ?? "غير متوفر")</p>
+                <p><strong>الرمز البريدي:</strong> @(shipping?.PostalCode ?? "غير متوفر")</p>
+                <p><strong>تاريخ الشحن:</strong> @(shipping?.ShippingDate?.ToString("yyyy-MM-dd") ?? "غير محدد")</p>
+                <p><strong>تاريخ التسليم المتوقع:</strong> @(shipping?.DeliveryDate?.ToString("yyyy-MM-dd") ?? "غير محدد")</p>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="card-header">
+                <h3><i class="fas fa-credit-card"></i> معلومات الدفع</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>طريقة الدفع:</strong> @(payment?.PaymentMethod ?? "غير متوفر")</p>
+                <p><strong>المبلغ:</strong> $@(payment?.Amount ?? 0)</p>
+                <p>
+                    <strong>حالة الدفع:</strong>
+                    <span class="status-badge status-@(payment?.Status?.ToLower() ?? "pending")">
+                        @(payment?.Status ?? "Pending")
+                    </span>
+                </p>
+                <p><strong>تاريخ الطلب:</strong> @(Model.OrderDate?.ToString("yyyy-MM-dd") ?? "غير محدد")</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="order-items">
+        <h3>منتجات الطلب</h3>
+        <div class="table-responsive">
+            <table class="admin-table items-table">
+                <thead>
+                    <tr>
+                        <th>الصورة</th>
+                        <th>اسم المنتج</th>
+                        <th>السعر</th>
+                        <th>الكمية</th>
+                        <th>المجموع</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        var itemTotal = (item.Price ?? 0) * (item.Quantity ?? 0);
+                        totalAmount += itemTotal;
+
+                        <tr>
+                            <td class="product-image">
+                                <img src="~/img/@item.Product?.Image" alt="@item.Product?.Name">
+                            </td>
+                            <td>@(item.Product?.Name ?? "منتج غير متوفر")</td>
+                            <td>$@item.Price</td>
+                            <td>@item.Quantity</td>
+                            <td>$@itemTotal</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="text-left">المجموع الفرعي</td>
+                        <td>$@totalAmount</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-left">الشحن</td>
+                        <td>مجاني</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="4" class="text-left">الإجمالي</td>
+                        <td>$@totalAmount</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div class="order-actions">
+        <a href="#" class="btn btn-primary" onclick="window.print()">
+            <i class="fas fa-print"></i> طباعة الطلب
+        </a>
+
+        <a href="@Url.Action("Orders", "Admin")" class="btn btn-secondary">
+            <i class="fas fa-arrow-right"></i> العودة للطلبات
+        </a>
+    </div>
+</div>

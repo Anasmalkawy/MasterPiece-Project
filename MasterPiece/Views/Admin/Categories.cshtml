@@ -1,0 +1,116 @@
+﻿@model List<MasterPiece.Models.Category>
+@{
+    ViewData["Title"] = "إدارة الفئات";
+    Layout = "_AdminLayout";
+}
+
+<div class="admin-categories">
+    <div class="page-header">
+        <h1>إدارة فئات المنتجات</h1>
+        <a href="@Url.Action("AddCategory", "Admin")" class="add-btn">
+            <i class="fas fa-plus"></i> إضافة فئة جديدة
+        </a>
+    </div>
+
+    <div class="admin-table-container">
+        @if (Model != null && Model.Any())
+        {
+            <table class="admin-table categories-table">
+                <thead>
+                    <tr>
+                        <th>رقم الفئة</th>
+                        <th>اسم الفئة</th>
+                        <th>عدد المنتجات</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Model)
+                    {
+                        <tr>
+                            <td>#@category.Id</td>
+                            <td>@category.Name</td>
+                            <td>@category.Products.Count</td>
+                            <td class="actions">
+                                <a href="@Url.Action("EditCategory", "Admin", new { id = category.Id })" class="action-btn edit-btn">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button class="action-btn delete-btn" data-toggle="modal" data-target="#deleteCategoryModal" data-id="@category.Id" data-name="@category.Name" data-count="@category.Products.Count">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="no-data">
+                <i class="fas fa-tag"></i>
+                <p>لا توجد فئات متاحة</p>
+                <a href="@Url.Action("AddCategory", "Admin")" class="add-btn">إضافة فئة جديدة</a>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- نافذة تأكيد الحذف -->
+<div class="modal fade" id="deleteCategoryModal" tabindex="-1" role="dialog" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCategoryModalLabel">تأكيد الحذف</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>هل أنت متأكد من حذف الفئة: <span id="categoryName"></span>؟</p>
+                <div id="categoryHasProducts" class="d-none">
+                    <p class="text-danger">تحتوي هذه الفئة على <span id="productsCount"></span> منتج. يجب نقل أو حذف هذه المنتجات قبل حذف الفئة.</p>
+                </div>
+                <div id="categoryEmpty" class="d-none">
+                    <p class="text-danger">هذا الإجراء لا يمكن التراجع عنه.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                <form id="deleteCategoryForm" method="post" action="@Url.Action("DeleteCategory", "Admin")">
+                    <input type="hidden" id="categoryId" name="id" />
+                    @Html.AntiForgeryToken()
+                    <button type="submit" id="confirmDelete" class="btn btn-danger">حذف</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // تهيئة نافذة الحذف
+            $('#deleteCategoryModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var id = button.data('id');
+                var name = button.data('name');
+                var count = button.data('count');
+
+                var modal = $(this);
+                modal.find('#categoryName').text(name);
+                modal.find('#categoryId').val(id);
+                modal.find('#productsCount').text(count);
+
+                if (count > 0) {
+                    $('#categoryHasProducts').removeClass('d-none');
+                    $('#categoryEmpty').addClass('d-none');
+                    $('#confirmDelete').prop('disabled', true);
+                } else {
+                    $('#categoryHasProducts').addClass('d-none');
+                    $('#categoryEmpty').removeClass('d-none');
+                    $('#confirmDelete').prop('disabled', false);
+                }
+            });
+        });
+    </script>
+}

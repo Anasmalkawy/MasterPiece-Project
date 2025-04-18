@@ -1,0 +1,77 @@
+﻿@model MasterPiece.Models.User
+
+@{
+    ViewData["Title"] = "تسجيل الدخول";
+}
+
+<main>
+    <!-- ✅ Start heading section -->
+    <div class="heading">
+        <div class="heading-home">
+            <i class='bx bx-home'></i>
+            <span>/ تسجيل</span>
+        </div>
+        <div class="heading-home">
+            <span>تسجيل</span>
+        </div>
+    </div>
+    <!-- ✅ End heading section -->
+    <!-- ✅ Start login section -->
+    <section class="register" dir="rtl">
+        <div class="container-register">
+            <form asp-action="login" method="post" class="registration-form" id="login-form">
+                <div class="title-register">
+                    <h3>دخول</h3>
+                </div>
+
+                <input asp-for="Email" class="email" placeholder="البريد الإلكتروني" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+
+                <input asp-for="Password" class="password" placeholder="كلمة المرور" type="password" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+
+                <div class="form-options">
+                    <div class="terms-section">
+                        <input type="checkbox" id="RememberMe" class="terms-checkbox-input" />
+                        <label for="RememberMe" class="terms-label">تذكرنى</label>
+                    </div>
+                    <div class="forgot-password">
+                        <span class="forgot-password-link">
+                            <a asp-controller="Account" asp-action="ForgotPassword">نسيت كلمة المرور؟</a>
+                        </span>
+                    </div>
+                </div>
+
+                <button type="submit" class="registration-button">دخول</button>
+
+                <div class="or-register-with">
+                    <span>او الدخول بواسطة</span>
+                </div>
+
+                <div class="social-login">
+                    <div class="social-icon">
+                        <i class='bx bxl-facebook'></i>
+                        <p>فيس بوك</p>
+                    </div>
+                    <div class="social-icon">
+                        <i class='bx bxl-gmail'></i>
+                        <p>جوجل</p>
+                    </div>
+                </div>
+
+                <div class="already-have-account">
+                    <p>غير مسجل؟ <a asp-controller="Home" asp-action="Register">انشئ حساب</a></p>
+                </div>
+            </form>
+
+            <!-- ✅ Error Modal -->
+            <div id="error-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" id="close-error-modal">&times;</span>
+                    <p id="error-message" class="error-message">بريد إلكتروني أو كلمة مرور غير صحيحة. يرجى المحاولة مرة أخرى.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ✅ End login section -->
+</main>

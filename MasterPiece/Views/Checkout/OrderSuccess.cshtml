@@ -1,0 +1,167 @@
+﻿@{
+    ViewData["Title"] = "تم تأكيد الطلب";
+    var orderId = ViewBag.OrderId;
+    var total = ViewBag.Total;
+}
+
+<!-- يجب إضافة هذه الأسطر في ملف _Layout.cshtml في قسم head -->
+<!--
+<link rel="stylesheet" href="~/css/checkout.css">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+-->
+<!-- Loading Overlay -->
+<div class="page-loader">
+    <div class="loader"></div>
+</div>
+
+<!-- Header section with breadcrumbs -->
+<div class="heading">
+    <div class="heading-home">
+        <i class='bx bx-home'></i>
+        <a href="/">الرئيسية</a>
+        <i class='bx bx-chevron-left'></i>
+        <a href="/Checkout/Cart">سلة المشتريات</a>
+        <i class='bx bx-chevron-left'></i>
+        <span>اكتمل الطلب</span>
+    </div>
+    <div class="heading-home">
+        <div class="checkout-steps">
+            <div class="step completed">
+                <span class="step-number"><i class='bx bx-check'></i></span>
+                <span class="step-text">معلومات الشحن</span>
+            </div>
+            <div class="step-connector completed"></div>
+            <div class="step completed">
+                <span class="step-number"><i class='bx bx-check'></i></span>
+                <span class="step-text">تأكيد الطلب</span>
+            </div>
+            <div class="step-connector completed"></div>
+            <div class="step completed">
+                <span class="step-number"><i class='bx bx-check'></i></span>
+                <span class="step-text">اكتمال الطلب</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="success-container">
+    <div class="success">
+        <div class="success-icon">
+            <i class='bx bx-check-circle'></i>
+        </div>
+
+        <div class="success-img">
+            <img src="~/img/fast-delivery-man-fly.png" alt="توصيل ناجح">
+        </div>
+
+        <h1>تم تأكيد طلبك بنجاح</h1>
+        <h4>سيتم توصيل طلبك قريباً، يمكنك تتبع تسليم الطلب في قسم "الطلبات"</h4>
+
+        <div class="order-details">
+            <div class="order-detail-item">
+                <span class="detail-label">رقم الطلب:</span>
+                <span class="detail-value">#@orderId</span>
+            </div>
+            <div class="order-detail-item">
+                <span class="detail-label">إجمالي المبلغ:</span>
+                <span class="detail-value">$@total</span>
+            </div>
+            <div class="order-detail-item">
+                <span class="detail-label">طريقة الدفع:</span>
+                <span class="detail-value">@(ViewBag.PaymentMethod == "COD" ? "الدفع عند الاستلام" : ViewBag.PaymentMethod == "Card" ? "بطاقة ائتمان" : "محفظة إلكترونية")</span>
+            </div>
+            <div class="order-detail-item">
+                <span class="detail-label">تاريخ الطلب:</span>
+                <span class="detail-value">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+        </div>
+
+        <div class="success-message">
+            <i class='bx bx-envelope'></i>
+            <p>تم إرسال تفاصيل الطلب إلى بريدك الإلكتروني</p>
+        </div>
+
+        <div class="success-actions">
+            <a href="/Account/OrderHistory" class="track-order-button">
+                <i class='bx bx-package'></i>
+                <span>تتبع الطلب</span>
+            </a>
+
+            <a asp-controller="Product" asp-action="Index" class="continue-button1">
+                <i class='bx bx-shopping-bag'></i>
+                <span>متابعة التسوق</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="success-footer">
+        <p>هل لديك أي استفسار؟ <a href="/Home/Contact">تواصل معنا</a></p>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/checkout.js"></script>
+    <script>
+        // إضافة فئة التحميل عند بدء الصفحة
+        document.body.classList.add('loading');
+
+        // إزالة فئة التحميل بعد تحميل الصفحة
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.body.classList.remove('loading');
+                document.querySelector('.page-loader').style.display = 'none';
+
+                // إضافة تأثير الظهور التدريجي للصفحة
+                document.querySelector('.success').classList.add('fade-in');
+
+                // إظهار الإشعار
+                showNotification('تم تأكيد طلبك بنجاح!', 'success');
+            }, 500);
+        });
+
+        // تأثيرات متحركة إضافية
+        const successImg = document.querySelector('.success-img');
+        if (successImg) {
+            // تطبيق تأثير الطفو
+            successImg.style.animation = 'float 3s ease-in-out infinite';
+        }
+
+        // دالة إظهار الإشعارات
+        function showNotification(message, type) {
+            // إنشاء عنصر الإشعار
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-x-circle'}'></i>
+                    <span>${message}</span>
+                </div>
+                <button class="notification-close"><i class='bx bx-x'></i></button>
+            `;
+
+            // إضافة الإشعار للصفحة
+            document.body.appendChild(notification);
+
+            // إظهار الإشعار
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+
+            // إغلاق الإشعار تلقائيًا بعد 5 ثوانٍ
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 5000);
+
+            // زر إغلاق الإشعار
+            notification.querySelector('.notification-close').addEventListener('click', () => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            });
+        }
+    </script>
+}

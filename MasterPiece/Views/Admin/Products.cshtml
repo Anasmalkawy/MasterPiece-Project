@@ -1,0 +1,142 @@
+﻿@model List<MasterPiece.Models.Product>
+@{
+    ViewData["Title"] = "إدارة المنتجات";
+    Layout = "_AdminLayout";
+}
+
+<div class="admin-products">
+    <div class="page-header">
+        <h1>إدارة المنتجات</h1>
+        <a href="@Url.Action("AddProduct", "Admin")" class="add-btn">
+            <i class="fas fa-plus"></i> إضافة منتج جديد
+        </a>
+    </div>
+
+    <div class="admin-filters">
+        <div class="search-box">
+            <input type="text" id="productSearch" placeholder="بحث عن المنتجات...">
+            <i class="fas fa-search"></i>
+        </div>
+        <div class="filter-options">
+            <select id="categoryFilter">
+                <option value="">جميع الفئات</option>
+                @foreach (var category in ViewBag.Categories ?? new List<MasterPiece.Models.Category>())
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="admin-table-container">
+        @if (Model != null && Model.Any())
+        {
+            <table class="admin-table products-table">
+                <thead>
+                    <tr>
+                        <th>الصورة</th>
+                        <th>الاسم</th>
+                        <th>الوصف</th>
+                        <th>الفئة</th>
+                        <th>السعر</th>
+                        <th>الكمية</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model)
+                    {
+                        <tr data-category="@product.CategoryId">
+                            <td class="product-image">
+                                <img src="~/img/@product.Image" alt="@product.Name">
+                            </td>
+                            <td>@product.Name</td>
+                            <td class="product-description">@(product.Description?.Length > 50 ? product.Description.Substring(0, 50) + "..." : product.Description)</td>
+                            <td>@(product.Category?.Name ?? "غير مصنف")</td>
+                            <td>$@product.Price</td>
+                            <td>@product.Quantity</td>
+                            <td class="actions">
+                                <a href="@Url.Action("EditProduct", "Admin", new { id = product.Id })" class="action-btn edit-btn">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button class="action-btn delete-btn" data-toggle="modal" data-target="#deleteModal" data-id="@product.Id" data-name="@product.Name">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="no-data">
+                <i class="fas fa-box-open"></i>
+                <p>لا توجد منتجات متاحة</p>
+                <a href="@Url.Action("AddProduct", "Admin")" class="add-btn">إضافة منتج جديد</a>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- نافذة تأكيد الحذف -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">تأكيد الحذف</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>هل أنت متأكد من حذف المنتج: <span id="productName"></span>؟</p>
+                <p class="text-danger">هذا الإجراء لا يمكن التراجع عنه.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                <form id="deleteForm" method="post" action="@Url.Action("DeleteProduct", "Admin")">
+                    <input type="hidden" id="productId" name="id" />
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">حذف</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // تهيئة نافذة الحذف
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var id = button.data('id');
+                var name = button.data('name');
+
+                var modal = $(this);
+                modal.find('#productName').text(name);
+                modal.find('#productId').val(id);
+            });
+
+            // بحث في المنتجات
+            $("#productSearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $(".products-table tbody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            // فلترة حسب الفئة
+            $("#categoryFilter").on("change", function() {
+                var value = $(this).val();
+                if (value === "") {
+                    $(".products-table tbody tr").show();
+                } else {
+                    $(".products-table tbody tr").hide();
+                    $(".products-table tbody tr[data-category='" + value + "']").show();
+                }
+            });
+        });
+    </script>
+}
