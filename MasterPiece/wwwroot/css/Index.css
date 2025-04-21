@@ -674,3 +674,388 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+
+/* ======= GENERAL STYLES ======= */
+:root {
+    --primary-color: #007bff;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --fade-in-duration: 0.8s;
+}
+
+body {
+    font-family: 'Tajawal', sans-serif;
+}
+
+/* ======= HERO SECTION ======= */
+.hero-container {
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    padding: 2rem;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.hero-button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .hero-button:hover {
+        background-color: #0069d9;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+/* ======= STATS BAR ======= */
+.stats-bar {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.stat-item {
+    transition: transform 0.3s ease;
+}
+
+    .stat-item:hover {
+        transform: translateY(-5px);
+    }
+
+/* ======= PRODUCT SECTIONS ======= */
+.product-section {
+    margin-bottom: 4rem;
+}
+
+.section-title {
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+/* Product Cards */
+.product-card {
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+    }
+
+.product-img-container {
+    position: relative;
+    overflow: hidden;
+    height: 200px;
+}
+
+    .product-img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.5s ease;
+    }
+
+.product-card:hover .product-img-container img {
+    transform: scale(1.05);
+}
+
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--danger-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.product-name {
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.product-price {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    color: var(--dark-color);
+    transition: all 0.3s ease;
+}
+
+    .icon-btn:hover {
+        transform: scale(1.1);
+    }
+
+.add-to-cart-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+    .add-to-cart-btn:hover {
+        background-color: #0069d9;
+        color: white;
+    }
+
+/* ======= PROMO SECTION ======= */
+.promo-card {
+    height: 250px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+    .promo-card:hover {
+        transform: translateY(-5px);
+    }
+
+.promo-content {
+    position: relative;
+    z-index: 2;
+    max-width: 60%;
+}
+
+.promo-image {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 100%;
+    width: 50%;
+    z-index: 1;
+}
+
+    .promo-image img {
+        height: 100%;
+        object-fit: contain;
+        object-position: right bottom;
+    }
+
+/* ======= NEWSLETTER SECTION ======= */
+.newsletter-section {
+    background-color: var(--light-color);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* ======= BRANDS SECTION ======= */
+.brands-section {
+    padding: 3rem 0;
+}
+
+.brand-logo {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 1rem;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+    .brand-logo:hover {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        border-color: var(--primary-color);
+    }
+
+.grayscale {
+    filter: grayscale(100%);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+    .grayscale.hover-color:hover {
+        filter: grayscale(0%);
+        opacity: 1;
+    }
+
+/* ======= ANIMATIONS ======= */
+/* Fade-in animation for sections */
+.fade-in-section {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeIn var(--fade-in-duration) ease-in-out forwards;
+    animation-play-state: running;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Staggered animation for product items */
+.product-item {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInProduct 0.6s ease-in-out forwards;
+    animation-delay: var(--delay, 0ms);
+}
+
+@keyframes fadeInProduct {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.brand-item {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInBrand 0.5s ease-in-out forwards;
+    animation-delay: calc(var(--i, 0) * 100ms);
+}
+
+@keyframes fadeInBrand {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ======= RESPONSIVE ADJUSTMENTS ======= */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .promo-content {
+        max-width: 100%;
+        padding: 1rem;
+    }
+
+    .promo-image {
+        opacity: 0.2;
+        width: 100%;
+    }
+}
+
+/* Set delay for the sections as they appear in the page */
+.fade-in-section:nth-child(1) {
+    animation-delay: 0ms;
+}
+
+.fade-in-section:nth-child(2) {
+    animation-delay: 200ms;
+}
+
+.fade-in-section:nth-child(3) {
+    animation-delay: 400ms;
+}
+
+.fade-in-section:nth-child(4) {
+    animation-delay: 600ms;
+}
+
+.fade-in-section:nth-child(5) {
+    animation-delay: 800ms;
+}
+
+.fade-in-section:nth-child(6) {
+    animation-delay: 1000ms;
+}
+
+/* Set brand item delays */
+.brand-item:nth-child(1) {
+    --i: 0;
+}
+
+.brand-item:nth-child(2) {
+    --i: 1;
+}
+
+.brand-item:nth-child(3) {
+    --i: 2;
+}
+
+.brand-item:nth-child(4) {
+    --i: 3;
+}
+
+.brand-item:nth-child(5) {
+    --i: 4;
+}
+
+.brand-item:nth-child(6) {
+    --i: 5;
+}

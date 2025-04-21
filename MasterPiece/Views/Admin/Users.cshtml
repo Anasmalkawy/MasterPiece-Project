@@ -34,8 +34,6 @@
                         <th>البريد الإلكتروني</th>
                         <th>رقم الهاتف</th>
                         <th>الدور</th>
-                        <th>الطلبات</th>
-                        <th>الإجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,15 +47,6 @@
                             <td>
                                 <span class="role-badge role-@(user.Role?.ToLower() ?? "user")">@(user.Role ?? "مستخدم")</span>
                             </td>
-                            <td>@user.Orders.Count</td>
-                            <td class="actions">
-                                <a href="@Url.Action("EditUser", "Admin", new { id = user.Id })" class="action-btn edit-btn">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button class="action-btn delete-btn" data-toggle="modal" data-target="#deleteUserModal" data-id="@user.Id" data-name="@user.Name" data-orders="@user.Orders.Count">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
                         </tr>
                     }
                 </tbody>
@@ -70,37 +59,6 @@
                 <p>لا يوجد مستخدمين حاليًا</p>
             </div>
         }
-    </div>
-</div>
-
-<!-- نافذة تأكيد الحذف -->
-<div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteUserModalLabel">تأكيد الحذف</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>هل أنت متأكد من حذف المستخدم: <span id="userName"></span>؟</p>
-                <div id="userHasOrders" class="d-none">
-                    <p class="text-danger">لديه هذا المستخدم <span id="ordersCount"></span> طلبات. لا يمكن حذف مستخدم لديه طلبات.</p>
-                </div>
-                <div id="userNoOrders" class="d-none">
-                    <p class="text-danger">هذا الإجراء لا يمكن التراجع عنه وسيؤدي إلى حذف جميع بيانات المستخدم.</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
-                <form id="deleteUserForm" method="post" action="@Url.Action("DeleteUser", "Admin")">
-                    <input type="hidden" id="userId" name="id" />
-                    @Html.AntiForgeryToken()
-                    <button type="submit" id="confirmUserDelete" class="btn btn-danger">حذف</button>
-                </form>
-            </div>
-        </div>
     </div>
 </div>
 

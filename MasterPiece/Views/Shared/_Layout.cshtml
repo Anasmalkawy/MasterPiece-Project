@@ -18,7 +18,7 @@
 	<link rel="stylesheet" href="~/css/Index.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/css/newcheckout.css" asp-append-version="true" />
 	<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-@* 	<link rel="stylesheet" href="~/css/profile-shared.css" asp-append-version="true" /> *@
+	<link rel="stylesheet" href="~/css/profile-shared.css" asp-append-version="true" />
 
 
 
@@ -67,16 +67,15 @@
 				<a asp-controller="Home" asp-action="index" class="logo"><i class='bx bx-laptop'></i></a>
 				<nav class="navbar">
 					<a asp-area="" asp-controller="Home" asp-action="index">الرئيسة</a>
-					<a asp-area="" asp-controller="Home" asp-action="index">المنتجات</a>
+					<a asp-area="" asp-controller="ProductsList" asp-action="index">المنتجات</a>
 					<a asp-area="" asp-controller="Home" asp-action="contact">تواصل معنا</a>
 					<a asp-controller="Home" asp-action="about">من نحن</a>
 				</nav>
 				<div class="icon-container">
 					<div class="whishlist-count">2</div>
-					<a href="whishlist.html"><i class='bx bx-heart'></i></a>
-					<div class="cart-count" id="cart-count">4</div>
+@* 					<a href="whishlist.html"><i class='bx bx-heart'></i></a>
+ *@					<div class="cart-count" id="cart-count">4</div>
 					<a asp-controller="Checkout" asp-action="Cart" id="add-to-cart-global"><i class='bx bxs-shopping-bags'></i></a>
-					<a href=""><i class='bx bx-search-alt'></i></a>
 				</div>
 
 			</div>

@@ -50,7 +50,7 @@
 </div>
 
 <!-- ✅ قسم اللابتوبات -->
-<section id="latest-products" class="product-section mb-5" dir="rtl" data-aos="fade-up">
+<section id="latest-products" class="product-section mb-5 fade-in-section" dir="rtl">
     <div class="container">
         <div class="section-title text-end mb-4">
             <h3 class="fw-bold border-end pe-3 border-4 border-primary d-inline-block">لابتوبات</h3>
@@ -61,7 +61,7 @@
         <div class="row g-4">
             @foreach (var product in Model.Where(p => p.CategoryId == 1))
             {
-                <div class="col-md-6 col-lg-4 col-xl-3" data-aos="fade-up" data-aos-delay="@((product.Id % 4) * 100)">
+                <div class="col-md-6 col-lg-4 col-xl-3 product-item" style="--delay: @((product.Id % 4) * 100)ms">
                     <div class="product-card border-0 h-100 shadow-sm">
                         <div class="product-img-container">
                             <img src="~/img/@product.Image" class="card-img-top" alt="@product.Name" />
@@ -89,11 +89,38 @@
     </div>
 </section>
 
-<!-- قسم الترويج (سيتم إضافته من خلال JavaScript) -->
-<div id="promo-section-container"></div>
+<!-- قسم الترويج (بديل للقسم الذي كان يتم إضافته بالجافاسكريبت) -->
+<section class="promo-section py-5 mb-5 fade-in-section" dir="rtl">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-6 promo-item">
+                <div class="promo-card bg-primary text-white position-relative overflow-hidden rounded-3">
+                    <div class="promo-content p-4">
+                        <h3 class="fw-bold mb-2">أحدث اللابتوبات</h3>
+                        <p class="mb-3">خصومات تصل إلى 25%</p>
+                        <a href="#" class="btn btn-outline-light rounded-pill">تسوق الآن</a>
+                    </div>
+                    <div class="promo-image">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 promo-item">
+                <div class="promo-card bg-success text-white position-relative overflow-hidden rounded-3">
+                    <div class="promo-content p-4">
+                        <h3 class="fw-bold mb-2">تخفيضات الموسم</h3>
+                        <p class="mb-3">على جميع الإكسسوارات</p>
+                        <a href="#" class="btn btn-outline-light rounded-pill">تسوق الآن</a>
+                    </div>
+                    <div class="promo-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- ✅ قسم الجوالات -->
-<section class="product-section mb-5" dir="rtl" data-aos="fade-up">
+<section class="product-section mb-5 fade-in-section" dir="rtl">
     <div class="container">
         <div class="section-title text-end mb-4">
             <h3 class="fw-bold border-end pe-3 border-4 border-success d-inline-block">جوالات</h3>
@@ -104,7 +131,7 @@
         <div class="row g-4">
             @foreach (var product in Model.Where(p => p.CategoryId == 2))
             {
-                <div class="col-md-6 col-lg-4 col-xl-3" data-aos="fade-up" data-aos-delay="@((product.Id % 4) * 100)">
+                <div class="col-md-6 col-lg-4 col-xl-3 product-item" style="--delay: @((product.Id % 4) * 100)ms">
                     <div class="product-card border-0 h-100 shadow-sm">
                         <div class="product-img-container">
                             <img src="~/img/@product.Image" class="card-img-top" alt="@product.Name" />
@@ -133,7 +160,7 @@
 </section>
 
 <!-- ✅ قسم الإكسسوارات -->
-<section class="product-section mb-5" dir="rtl" data-aos="fade-up">
+<section class="product-section mb-5 fade-in-section" dir="rtl">
     <div class="container">
         <div class="section-title text-end mb-4">
             <h3 class="fw-bold border-end pe-3 border-4 border-warning d-inline-block">إكسسوارات</h3>
@@ -144,7 +171,7 @@
         <div class="row g-4">
             @foreach (var product in Model.Where(p => p.CategoryId == 3))
             {
-                <div class="col-md-6 col-lg-4 col-xl-3" data-aos="fade-up" data-aos-delay="@((product.Id % 4) * 100)">
+                <div class="col-md-6 col-lg-4 col-xl-3 product-item" style="--delay: @((product.Id % 4) * 100)ms">
                     <div class="product-card border-0 h-100 shadow-sm">
                         <div class="product-img-container">
                             <img src="~/img/@product.Image" class="card-img-top" alt="@product.Name" />
@@ -157,7 +184,7 @@
                             <h5 class="product-name">@product.Name</h5>
                             <p class="product-price mb-3">$@product.Price</p>
                             <div class="d-flex justify-content-end gap-2">
-                                <a asp-controller="product" asp-action="addCart" asp-route-id="@product.Id" @* class="btn icon-btn add-to-cart-btn" *@ title="أضف للسلة">
+                                <a asp-controller="product" asp-action="addCart" asp-route-id="@product.Id" class="btn icon-btn add-to-cart-btn" title="أضف للسلة">
                                     <i class='bx bxs-shopping-bags'></i>
                                 </a>
                                 <a asp-controller="product" asp-action="singleproduct" asp-route-id="@product.Id" class="btn icon-btn" title="عرض التفاصيل">
@@ -171,8 +198,9 @@
         </div>
     </div>
 </section>
+
 <!-- قسم الاشتراك في النشرة البريدية -->
-<section class="newsletter-section py-5 bg-light" dir="rtl" data-aos="fade-up">
+<section class="newsletter-section py-5 bg-light fade-in-section" dir="rtl">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8 text-center">
@@ -180,10 +208,12 @@
                 <p class="text-muted mb-4">احصل على آخر العروض والتخفيضات مباشرة إلى بريدك الإلكتروني</p>
                 <div class="row justify-content-center">
                     <div class="col-md-8">
-                        <div class="input-group">
-                            <input type="email" class="form-control form-control-lg" placeholder="البريد الإلكتروني">
-                            <button class="btn btn-primary px-4">اشتراك</button>
-                        </div>
+                        <form method="post" asp-controller="Home" asp-action="Subscribe">
+                            <div class="input-group">
+                                <input type="email" name="email" class="form-control form-control-lg" placeholder="البريد الإلكتروني" required>
+                                <button type="submit" class="btn btn-primary px-4">اشتراك</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -191,23 +221,5 @@
     </div>
 </section>
 
-<!-- قسم العلامات التجارية (سيتم إضافته من خلال JavaScript) -->
-<div id="brands-section-container"></div>
 
-@section Scripts {
-    <!-- تضمين مكتبة AOS للتأثيرات الحركية -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-
-    <!-- تضمين ملف JavaScript المخصص -->
-    <script src="~/js/homepage.js"></script>
-
-    <!-- تفعيل Bootstrap Toasts -->
-    <script>
-        var toastElList = [].slice.call(document.querySelectorAll('.toast'));
-        var toastList = toastElList.map(function(toastEl) {
-            return new bootstrap.Toast(toastEl);
-        });
-
-    </script>
-}
+<!-- تضمين ملف CSS المخصص -->

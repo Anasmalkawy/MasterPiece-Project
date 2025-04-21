@@ -1,0 +1,197 @@
+﻿@model MasterPiece.ViewModels.ProductsListViewModel
+@{
+    ViewData["Title"] = "جميع المنتجات";
+}
+<link rel="stylesheet" href="~/css/products-list.css" asp-append-version="true" />
+<div class="products-page-container" dir="rtl">
+    <div class="container py-5">
+        <h1 class="main-title text-center mb-5">
+            <span class="border-bottom border-3 border-primary pb-2">تسوق جميع المنتجات</span>
+        </h1>
+
+        <div class="row">
+            <!-- قسم الفلاتر -->
+            <div class="col-lg-3 mb-4">
+                <div class="filter-container bg-white p-4 rounded-3 shadow-sm">
+                    <h4 class="fw-bold border-bottom border-2 pb-3 mb-4">الفلاتر</h4>
+
+                    <form id="filterForm" method="get" asp-action="Filter" asp-controller="ProductsList">
+                        <!-- فلتر الفئات -->
+                        <div class="filter-section mb-4">
+                            <h5 class="fw-bold mb-3">الفئات</h5>
+                            <div class="category-list">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="categoryId" id="category-all" value="" @(Model.SelectedCategoryId == null ? "checked" : "")>
+                                    <label class="form-check-label" for="category-all">
+                                        الكل
+                                    </label>
+                                </div>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="categoryId" id="category-@category.Id" value="@category.Id" @(Model.SelectedCategoryId == category.Id ? "checked" : "")>
+                                        <label class="form-check-label" for="category-@category.Id">
+                                            @category.Name
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- فلتر نطاق السعر -->
+                        <div class="filter-section mb-4">
+                            <h5 class="fw-bold mb-3">نطاق السعر</h5>
+                            <div class="price-range-control mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="min-price">$<span id="min-price-display">@Model.PriceRange.MinPrice</span></span>
+                                    <span class="max-price">$<span id="max-price-display">@Model.PriceRange.MaxPrice</span></span>
+                                </div>
+                                <div class="price-slider-container">
+                                    <input type="range" class="form-range mb-2" id="min-price-slider"
+                                           min="@Model.PriceRange.MinPrice" max="@Model.PriceRange.MaxPrice"
+                                           value="@(Model.MinPrice ?? Model.PriceRange.MinPrice)">
+                                    <input type="range" class="form-range" id="max-price-slider"
+                                           min="@Model.PriceRange.MinPrice" max="@Model.PriceRange.MaxPrice"
+                                           value="@(Model.MaxPrice ?? Model.PriceRange.MaxPrice)">
+                                </div>
+                                <input type="hidden" name="minPrice" id="min-price-input" value="@(Model.MinPrice ?? Model.PriceRange.MinPrice)">
+                                <input type="hidden" name="maxPrice" id="max-price-input" value="@(Model.MaxPrice ?? Model.PriceRange.MaxPrice)">
+                            </div>
+                        </div>
+
+                        <!-- الترتيب -->
+                        <div class="filter-section mb-4">
+                            <h5 class="fw-bold mb-3">الترتيب</h5>
+                            <select class="form-select" name="sortOrder" id="sort-order">
+                                <option value="">الافتراضي</option>
+                                <option value="price_asc" selected="@(Model.SortOrder == "price_asc")">السعر: من الأقل إلى الأعلى</option>
+                                <option value="price_desc" selected="@(Model.SortOrder == "price_desc")">السعر: من الأعلى إلى الأقل</option>
+                                <option value="name_asc" selected="@(Model.SortOrder == "name_asc")">الاسم: أ-ي</option>
+                                <option value="name_desc" selected="@(Model.SortOrder == "name_desc")">الاسم: ي-أ</option>
+                            </select>
+                        </div>
+
+                        <!-- زر تطبيق الفلتر -->
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">تطبيق الفلتر</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- قسم المنتجات -->
+            <div class="col-lg-9">
+                <!-- عدد النتائج والترتيب -->
+                <div class="results-header bg-white p-3 rounded-3 shadow-sm mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="results-count">
+                            <span class="fw-bold">@Model.Products.Count</span> منتج
+                        </div>
+                    </div>
+                </div>
+
+                <!-- قائمة المنتجات -->
+                <div class="row g-4 products-grid">
+                    @if (Model.Products.Count > 0)
+                    {
+                        foreach (var product in Model.Products)
+                        {
+                            <div class="col-md-6 col-lg-4 product-item fade-in-item">
+                                <div class="product-card border-0 h-100 shadow-sm">
+                                    <div class="product-img-container">
+                                        <img src="~/img/@product.Image" class="card-img-top" alt="@product.Name" />
+                                        @if (product.Id % 4 == 0)
+                                        {
+                                            <span class="discount-badge">خصم @(15 + (product.Id % 10))%</span>
+                                        }
+                                    </div>
+                                    <div class="card-body text-end">
+                                        <div class="category-badge mb-2">@product.Category?.Name</div>
+                                        <h5 class="product-name">@product.Name</h5>
+                                        <p class="product-price mb-3">$@product.Price</p>
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <form method="post" asp-action="AddToCart" asp-controller="ProductsList">
+                                                <input type="hidden" name="productId" value="@product.Id" />
+                                                <button type="submit" class="btn icon-btn add-to-cart-btn" title="أضف للسلة">
+                                                    <i class='bx bxs-shopping-bags'></i>
+                                                </button>
+                                            </form>
+                                            <a asp-controller="product" asp-action="singleproduct" asp-route-id="@product.Id" class="btn icon-btn" title="عرض التفاصيل">
+                                                <i class='bx bx-show-alt'></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12">
+                            <div class="no-products text-center p-5 bg-light rounded-3">
+                                <i class='bx bx-package text-primary display-1 mb-3'></i>
+                                <h4 class="fw-bold">لا توجد منتجات تطابق الفلاتر المحددة</h4>
+                                <p class="text-muted">يرجى تغيير إعدادات الفلتر وإعادة المحاولة</p>
+                                <a href="@Url.Action("Index", "ProductsList")" class="btn btn-outline-primary mt-3">عرض جميع المنتجات</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ملف JavaScript المخصص للفلاتر -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // عناصر نطاق السعر
+        const minPriceSlider = document.getElementById('min-price-slider');
+        const maxPriceSlider = document.getElementById('max-price-slider');
+        const minPriceInput = document.getElementById('min-price-input');
+        const maxPriceInput = document.getElementById('max-price-input');
+        const minPriceDisplay = document.getElementById('min-price-display');
+        const maxPriceDisplay = document.getElementById('max-price-display');
+
+        // تحديث قيمة السعر الأدنى
+        minPriceSlider.addEventListener('input', function() {
+            const minValue = parseInt(this.value);
+            const maxValue = parseInt(maxPriceSlider.value);
+
+            if (minValue > maxValue) {
+                this.value = maxValue;
+                minPriceInput.value = maxValue;
+                minPriceDisplay.textContent = maxValue;
+            } else {
+                minPriceInput.value = minValue;
+                minPriceDisplay.textContent = minValue;
+            }
+        });
+
+        // تحديث قيمة السعر الأعلى
+        maxPriceSlider.addEventListener('input', function() {
+            const maxValue = parseInt(this.value);
+            const minValue = parseInt(minPriceSlider.value);
+
+            if (maxValue < minValue) {
+                this.value = minValue;
+                maxPriceInput.value = minValue;
+                maxPriceDisplay.textContent = minValue;
+            } else {
+                maxPriceInput.value = maxValue;
+                maxPriceDisplay.textContent = maxValue;
+            }
+        });
+
+        // تغيير الترتيب
+        document.getElementById('sort-order').addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
+
+        // تحديث الفلتر عند تغيير الفئة
+        const categoryRadios = document.querySelectorAll('input[name="categoryId"]');
+        categoryRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('filterForm').submit();
+            });
+        });
+    });
+</script>

@@ -104,7 +104,6 @@
                             <th>البريد الإلكتروني</th>
                             <th>الهاتف</th>
                             <th>الصلاحية</th>
-                            <th>الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,9 +116,6 @@
                                     <td>@user.Email</td>
                                     <td>@user.Phone</td>
                                     <td>@user.Role</td>
-                                    <td>
-                                        <a href="@Url.Action("EditUser", "Admin", new { id = user.Id })" class="action-btn"><i class="fas fa-edit"></i></a>
-                                    </td>
                                 </tr>
                             }
                         }

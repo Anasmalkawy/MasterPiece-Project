@@ -1,105 +1,104 @@
-﻿
+﻿//// Use optional chaining to prevent errors if elements don't exist
+//const priceRange = document.getElementById('price-range-slider');
+//const priceLabel = document.getElementById('price-label');
 
-const priceRange = document.getElementById('price-range');
-const priceLabel = document.getElementById('price-label');
+//// Only add the event listener if both elements exist
+//if (priceRange && priceLabel) {
+//    priceRange.addEventListener('input', (event) => {
+//        priceLabel.textContent = event.target.value;
+//    });
+//}
 
-priceRange.addEventListener('input', (event) => {
-    priceLabel.textContent = event.target.value;
-});
+//function applyEffect(image) {
+//    image.classList.toggle("clicked");
+//}
 
-    function applyEffect(image) {
-        image.classList.toggle("clicked");
-        }
+//// Slider functionality
+//$('.slider').each(function () {
+//    var $this = $(this);
+//    var $group = $this.find('.slide_group');
+//    var $slides = $this.find('.slide');
+//    var bulletArray = [];
+//    var currentIndex = 0;
+//    var timeout;
 
+//    function move(newIndex) {
+//        var animateLeft, slideLeft;
+//        advance();
 
-    $('.slider').each(function() {
-        var $this = $(this);
-    var $group = $this.find('.slide_group');
-    var $slides = $this.find('.slide');
-    var bulletArray = [];
-    var currentIndex = 0;
-    var timeout;
+//        if ($group.is(':animated') || currentIndex === newIndex) {
+//            return;
+//        }
 
-    function move(newIndex) {
-            var animateLeft, slideLeft;
+//        bulletArray[currentIndex].removeClass('active');
+//        bulletArray[newIndex].addClass('active');
 
-    advance();
+//        if (newIndex > currentIndex) {
+//            slideLeft = '100%';
+//            animateLeft = '-100%';
+//        } else {
+//            slideLeft = '-100%';
+//            animateLeft = '100%';
+//        }
 
-    if ($group.is(':animated') || currentIndex === newIndex) {
-            return;
-            }
+//        $slides.eq(newIndex).css({
+//            display: 'block',
+//            left: slideLeft
+//        });
 
-    bulletArray[currentIndex].removeClass('active');
-    bulletArray[newIndex].addClass('active');
-            
-            if (newIndex > currentIndex) {
-        slideLeft = '100%';
-    animateLeft = '-100%';
-            } else {
-        slideLeft = '-100%';
-    animateLeft = '100%';
-            }
+//        $group.animate({
+//            left: animateLeft
+//        }, function () {
+//            $slides.eq(currentIndex).css({
+//                display: 'none'
+//            });
+//            $slides.eq(newIndex).css({
+//                left: 0
+//            });
+//            $group.css({
+//                left: 0
+//            });
+//            currentIndex = newIndex;
+//        });
+//    }
 
-    $slides.eq(newIndex).css({
-        display: 'block',
-    left: slideLeft
-            });
-    $group.animate({
-        left: animateLeft
-            }, function() {
-        $slides.eq(currentIndex).css({
-            display: 'none'
-        });
-    $slides.eq(newIndex).css({
-        left: 0
-            });
-    $group.css({
-        left: 0
-            });
-    currentIndex = newIndex;
-            });
-        }
+//    function advance() {
+//        clearTimeout(timeout);
+//        timeout = setTimeout(function () {
+//            if (currentIndex < ($slides.length - 1)) {
+//                move(currentIndex + 1);
+//            } else {
+//                move(0);
+//            }
+//        }, 4000);
+//    }
 
-    function advance() {
-        clearTimeout(timeout);
-    timeout = setTimeout(function() {
-            if (currentIndex < ($slides.length - 1)) {
-        move(currentIndex + 1);
-            } else {
-        move(0);
-            }
-            }, 4000);
-        }
+//    $('.next_btn').on('click', function () {
+//        if (currentIndex < ($slides.length - 1)) {
+//            move(currentIndex + 1);
+//        } else {
+//            move(0);
+//        }
+//    });
 
-    $('.next_btn').on('click', function() {
-            if (currentIndex < ($slides.length - 1)) {
-        move(currentIndex + 1);
-            } else {
-        move(0);
-            }
-        });
+//    $('.previous_btn').on('click', function () {
+//        if (currentIndex !== 0) {
+//            move(currentIndex - 1);
+//        } else {
+//            move(3);
+//        }
+//    });
 
-    $('.previous_btn').on('click', function() {
-            if (currentIndex !== 0) {
-        move(currentIndex - 1);
-            } else {
-        move(3);
-            }
-        });
+//    $.each($slides, function (index) {
+//        var $button = $('<a class="slide_btn">&bull;</a>');
+//        if (index === currentIndex) {
+//            $button.addClass('active');
+//        }
+//        $button.on('click', function () {
+//            move(index);
+//        }).appendTo('.slide_buttons');
+//        bulletArray.push($button);
+//    });
 
-    $.each($slides, function(index) {
-            var $button = $('<a class="slide_btn">&bull;</a>');
-
-    if (index === currentIndex) {
-        $button.addClass('active');
-            }
-    $button.on('click', function() {
-        move(index);
-            }).appendTo('.slide_buttons');
-    bulletArray.push($button);
-        });
-
-    advance();
-        });
-
-
+//    advance();
+//});
