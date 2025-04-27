@@ -29,20 +29,24 @@ namespace MasterPiece.Controllers
         public IActionResult login(User user)
         {
             var data = _context.Users.FirstOrDefault(x => x.Email == user.Email && x.Password == user.Password);
-            if (data.Role == "admin")
-            {
-                HttpContext.Session.SetInt32("id", data.Id);
-                HttpContext.Session.SetString("role", data.Role);
-                return RedirectToAction("index", "Admin");
-
-
-            }
             if (data != null)
             {
-                HttpContext.Session.SetInt32("id", data.Id);
-                HttpContext.Session.SetString("name", data.Name);
-                HttpContext.Session.SetString("mail", data.Email);
-                return RedirectToAction("index", "Home");
+                if (data.Role == "admin")
+                {
+                    HttpContext.Session.SetInt32("id", data.Id);
+                    HttpContext.Session.SetString("role", data.Role);
+                    return RedirectToAction("index", "Admin");
+
+
+                }
+                else
+                {
+                    HttpContext.Session.SetInt32("id", data.Id);
+                    HttpContext.Session.SetString("name", data.Name);
+                    HttpContext.Session.SetString("mail", data.Email);
+                    return RedirectToAction("index", "Home");
+                }
+
             }
             return View();
         }
@@ -54,6 +58,7 @@ namespace MasterPiece.Controllers
         [HttpPost]
         public IActionResult Register(User user)
         {
+            user.Role = "user";
             _context.Users.Add(user);
             _context.SaveChanges();
             return RedirectToAction("login", "Home");

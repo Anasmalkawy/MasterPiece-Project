@@ -32,14 +32,13 @@
 		<nav class="top-header">
 			<div class="container">
 				<div class="right-nav">
-					<span> العروض وفر حتي 45% خصم اليوم</span>
 					<div class="contact-info">
 						<i class='bx bx-headphone'></i>
 						<span>+962 775 994747</span>
 					</div>
 				</div>
 				<div class="left-nav">
-					@if (Context.Session.GetInt32("id")!=null)
+					@if (Context.Session.GetInt32("id") != null)
 					{
 						<div class="account-button">
 							<i class='bx bx-user'></i>
@@ -53,9 +52,6 @@
 							<a asp-area="" asp-controller="Home" asp-action="login">تسجيل / الدخول</a>
 						</div>
 					}
-
-
-
 				</div>
 			</div>
 		</nav>
@@ -73,7 +69,7 @@
 				</nav>
 				<div class="icon-container">
 					<div class="whishlist-count">2</div>
-@* 					<a href="whishlist.html"><i class='bx bx-heart'></i></a>
+					@* 					<a href="whishlist.html"><i class='bx bx-heart'></i></a>
  *@					<div class="cart-count" id="cart-count">4</div>
 					<a asp-controller="Checkout" asp-action="Cart" id="add-to-cart-global"><i class='bx bxs-shopping-bags'></i></a>
 				</div>
@@ -97,7 +93,7 @@
 				<div class="col-footer">
 					<a href="#" class="logo"><img src="~/img/logo.png" alt=""></a>
 					<p>
-						لوريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر.
+						Master piece website
 					</p>
 					<div class="social-links">
 						<i class='bx bxl-instagram-alt'></i>

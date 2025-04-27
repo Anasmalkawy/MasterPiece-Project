@@ -67,10 +67,6 @@
                 <span class="detail-value">$@total</span>
             </div>
             <div class="order-detail-item">
-                <span class="detail-label">طريقة الدفع:</span>
-                <span class="detail-value">@(ViewBag.PaymentMethod == "COD" ? "الدفع عند الاستلام" : ViewBag.PaymentMethod == "Card" ? "بطاقة ائتمان" : "محفظة إلكترونية")</span>
-            </div>
-            <div class="order-detail-item">
                 <span class="detail-label">تاريخ الطلب:</span>
                 <span class="detail-value">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
             </div>
@@ -78,16 +74,11 @@
 
         <div class="success-message">
             <i class='bx bx-envelope'></i>
-            <p>تم إرسال تفاصيل الطلب إلى بريدك الإلكتروني</p>
+            <p>تم إرسال تفاصيل الطلب إلى ملفك الشخصي</p>
         </div>
 
         <div class="success-actions">
-            <a href="/Account/OrderHistory" class="track-order-button">
-                <i class='bx bx-package'></i>
-                <span>تتبع الطلب</span>
-            </a>
-
-            <a asp-controller="Product" asp-action="Index" class="continue-button1">
+            <a asp-controller="Home" asp-action="index" class="continue-button1">
                 <i class='bx bx-shopping-bag'></i>
                 <span>متابعة التسوق</span>
             </a>
